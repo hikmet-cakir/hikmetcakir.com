@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -17,5 +17,5 @@ public class ArticleSummary {
     private String title;
     private String content;
     private String createdBy;
-    private OffsetDateTime created;
+    private LocalDateTime created;
 }

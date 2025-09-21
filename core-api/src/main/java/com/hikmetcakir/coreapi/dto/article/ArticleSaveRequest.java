@@ -11,6 +11,6 @@ public class ArticleSaveRequest {
 
     private String title;
     private String content;
-    private String topicId;
+    private Integer topicId;
     private String createdBy;
 }
