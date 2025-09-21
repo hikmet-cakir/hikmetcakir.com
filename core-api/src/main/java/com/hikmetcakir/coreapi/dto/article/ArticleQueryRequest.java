@@ -11,5 +11,5 @@ public class ArticleQueryRequest {
 
     private String id;
     private String title;
-    private String topicId;
+    private Integer topicId;
 }
