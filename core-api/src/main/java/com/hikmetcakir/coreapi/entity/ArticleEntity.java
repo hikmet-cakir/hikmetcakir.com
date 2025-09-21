@@ -1,6 +1,7 @@
 package com.hikmetcakir.coreapi.entity;
 
 import lombok.*;
+import lombok.experimental.FieldNameConstants;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -11,6 +12,7 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@FieldNameConstants
 @Document(collection = "article")
 public class ArticleEntity {
 

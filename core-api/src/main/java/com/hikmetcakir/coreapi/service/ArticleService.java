@@ -5,8 +5,11 @@ import com.hikmetcakir.coreapi.dto.article.ArticleSaveRequest;
 import com.hikmetcakir.coreapi.dto.article.ArticleSummary;
 import com.hikmetcakir.coreapi.dto.article.ArticleUpdateRequest;
 import com.hikmetcakir.coreapi.entity.ArticleEntity;
+import com.hikmetcakir.coreapi.mapper.ArticleMapper;
 import com.hikmetcakir.coreapi.respository.ArticleRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -21,7 +24,23 @@ public class ArticleService {
     private ArticleRepository articleRepository;
 
     public List<ArticleSummary> query(ArticleQueryRequest request) {
-        return null;
+        ArticleEntity filter  = ArticleEntity.builder()
+                .id(request.getId())
+                .title(request.getTitle())
+                .topicId(request.getTopicId())
+                .build();
+
+        ExampleMatcher matcher = ExampleMatcher.matchingAll()
+                .withIgnoreNullValues()
+                .withIgnoreCase()
+                .withMatcher(ArticleEntity.Fields.title, match -> match.stringMatcher(ExampleMatcher.StringMatcher.CONTAINING))
+                .withMatcher(ArticleEntity.Fields.id, ExampleMatcher.GenericPropertyMatcher::exact)
+                .withMatcher(ArticleEntity.Fields.topicId, ExampleMatcher.GenericPropertyMatcher::exact);
+
+        Example<ArticleEntity> example = Example.of(filter, matcher);
+
+        List<ArticleEntity> articleEntityList = articleRepository.findAll(example);
+        return ArticleMapper.INSTANCE.to(articleEntityList);
     }
 
     public String save(ArticleSaveRequest request) {
