@@ -1,6 +1,7 @@
 package com.hikmetcakir.coreapi.service;
 
 import com.hikmetcakir.coreapi.dto.article.ArticleQueryRequest;
+import com.hikmetcakir.coreapi.dto.article.ArticleSaveRequest;
 import com.hikmetcakir.coreapi.dto.article.ArticleSummary;
 import com.hikmetcakir.coreapi.entity.ArticleEntity;
 import com.hikmetcakir.coreapi.respository.ArticleRepository;
@@ -17,6 +18,8 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -40,7 +43,7 @@ public class ArticleServiceTest {
                 .id(articleId)
                 .build();
 
-        when(articleRepository.findAll(Mockito.any(Example.class))).thenReturn(List.of(mockEntity));
+        when(articleRepository.findAll(any(Example.class))).thenReturn(List.of(mockEntity));
         // endregion
 
         // region When
@@ -69,7 +72,7 @@ public class ArticleServiceTest {
                 .id(articleId)
                 .build();
 
-        when(articleRepository.findAll(Mockito.any(Example.class))).thenReturn(new ArrayList());
+        when(articleRepository.findAll(any(Example.class))).thenReturn(new ArrayList());
         // endregion
 
         // region When
@@ -95,7 +98,7 @@ public class ArticleServiceTest {
                 .title(articleTitle)
                 .build();
 
-        when(articleRepository.findAll(Mockito.any(Example.class))).thenReturn(List.of(mockEntity));
+        when(articleRepository.findAll(any(Example.class))).thenReturn(List.of(mockEntity));
         // endregion
 
         // region When
@@ -124,7 +127,7 @@ public class ArticleServiceTest {
                 .topicId(articleTopicId)
                 .build();
 
-        when(articleRepository.findAll(Mockito.any(Example.class))).thenReturn(List.of(mockEntity));
+        when(articleRepository.findAll(any(Example.class))).thenReturn(List.of(mockEntity));
         // endregion
 
         // region When
@@ -135,6 +138,53 @@ public class ArticleServiceTest {
         assertThat(result)
                 .isNotNull()
                 .hasSize(1);
+        // endregion
+    }
+
+    @Test
+    void save_givenFullFilledArticle_saveAndReturnGeneratedID() {
+        // region Given
+        ArticleSaveRequest request = ArticleSaveRequest.builder()
+                .title("DummyTitle")
+                .content("DummyContent")
+                .topicId(1)
+                .createdBy("75872")
+                .build();
+
+        ArticleEntity mockEntity = ArticleEntity.builder()
+                .id(UUID.randomUUID().toString())
+                .build();
+        when(articleRepository.save(any())).thenReturn(mockEntity);
+        // endregion
+
+        // region When
+        var article = articleService.save(request);
+        // endregion
+
+        // region Then
+        assertThat(article)
+                .isNotNull()
+                .isNotBlank();
+        // endregion
+    }
+
+    @Test
+    void save_givenRepositoryThrowsException_thenPropagateException() {
+        // region Given
+        ArticleSaveRequest request = ArticleSaveRequest.builder()
+                .title("DummyTitle")
+                .content("DummyContent")
+                .topicId(1)
+                .createdBy("75872")
+                .build();
+
+        when(articleRepository.save(any())).thenThrow(new RuntimeException("DB error"));
+        // endregion
+
+        // region When & Then
+        assertThatThrownBy(() -> articleService.save(request))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessageContaining("DB error");
         // endregion
     }
 }
