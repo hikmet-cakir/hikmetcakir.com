@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/article")
@@ -28,12 +27,12 @@ public class ArticleController {
     }
 
     @PutMapping("/{id}")
-    public void update(@PathVariable("id") Long id, @RequestBody ArticleUpdateRequest request) {
+    public void update(@PathVariable("id") String id, @RequestBody ArticleUpdateRequest request) {
         articleService.update(id, request);
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable("id") Long id) {
+    public void delete(@PathVariable("id") String id) {
         articleService.delete(id);
     }
 }

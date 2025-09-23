@@ -57,11 +57,21 @@ public class ArticleService {
                 .orElseThrow();
     }
 
-    public void update(Long id, ArticleUpdateRequest request) {
+    public void update(String id, ArticleUpdateRequest request) {
+        ArticleEntity articleEntity = articleRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Article with given id does not exist and cannot be updated"));
 
+        ArticleMapper.INSTANCE.updateEntity(request, articleEntity);
+
+        articleRepository.save(articleEntity);
     }
 
-    public void delete(Long id) {
+    public void delete(String id) {
+        ArticleEntity articleEntity = articleRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Article with given id does not exist and cannot be deleted"));
 
+        articleEntity.setDeleted(true);
+
+        articleRepository.save(articleEntity);
     }
 }
