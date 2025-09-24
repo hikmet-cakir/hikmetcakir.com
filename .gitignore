@@ -84,8 +84,7 @@ log.txt
 out/
 .splitter/
 .env
-
-node_modules/
+ 
 
 __pycache__/
 lib/glowroot/data/
@@ -95,3 +94,24 @@ lib/newrelic/logs/
 *.pyc
 *.db
 lib/
+
+
+.vscode/
+
+# Node / frontend
+node_modules/
+dist/
+.astro/
+.cache/
+.vercel/
+
+# environment variables
+.env
+.env.production
+
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
