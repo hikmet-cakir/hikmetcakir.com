@@ -1,0 +1,20 @@
+---
+const { article } = Astro.props;
+
+function truncate(text, maxLength = 180) {
+  if (!text) return "";
+  return text.length > maxLength ? text.substring(0, maxLength) + "..." : text;
+}
+---
+
+<article class="w-full p-8 bg-white rounded-3xl shadow-md hover:shadow-xl transition-shadow duration-300">
+  <h2 class="text-3xl font-bold mb-4">{article.title}</h2>
+  <p class="text-gray-700 mb-8 leading-relaxed">
+    {truncate(article.content)}
+  </p>
+  <div class="flex justify-end">
+    <button class="px-6 py-3 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors">
+      Devamını Oku →
+    </button>
+  </div>
+</article>

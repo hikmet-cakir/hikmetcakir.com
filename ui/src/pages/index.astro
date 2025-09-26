@@ -1,8 +1,20 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import ArticlePreview from "../components/ArticlePreview.astro";
 import '../styles/global.css';
+
+const res = await fetch("http://localhost:8080/article");
+const data = await res.json();
+const articles = data.articleSummaryList;
+
 ---
 
 <Layout title="Hikmet Cakir Blog">
- 
+ <h1 class="text-4xl font-extrabold mb-10">Makaleler</h1>
+
+  <div class="grid gap-10">
+    {
+        articles.map(article => <ArticlePreview article={article} key={article.id} />)
+    }
+  </div>
 </Layout>
