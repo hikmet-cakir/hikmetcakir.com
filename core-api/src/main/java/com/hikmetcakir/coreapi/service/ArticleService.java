@@ -10,6 +10,8 @@ import com.hikmetcakir.coreapi.respository.ArticleRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -38,8 +40,9 @@ public class ArticleService {
 
         Example<ArticleEntity> example = Example.of(filter, matcher);
 
-        List<ArticleEntity> articleEntityList = articleRepository.findAll(example);
-        return ArticleMapper.INSTANCE.to(articleEntityList);
+        PageRequest pageRequest = PageRequest.of(request.getPage(), request.getSize());
+        Page<ArticleEntity> articleEntityPageList = articleRepository.findAll(example, pageRequest);
+        return articleEntityPageList.map(ArticleMapper.INSTANCE::to).getContent();
     }
 
     public String save(ArticleSaveRequest request) {

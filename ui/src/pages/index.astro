@@ -3,7 +3,7 @@ import Layout from "../layouts/Layout.astro";
 import ArticlePreview from "../components/ArticlePreview.astro";
 import '../styles/global.css';
 
-const res = await fetch("http://localhost:8080/article");
+const res = await fetch("http://localhost:8080/article?size=10&page=0");
 const data = await res.json();
 const articles = data.articleSummaryList;
 

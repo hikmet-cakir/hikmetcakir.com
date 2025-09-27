@@ -14,4 +14,6 @@ public class ArticleQueryRequest {
     private String id;
     private String title;
     private Integer topicId;
+    private int size;
+    private int page;
 }

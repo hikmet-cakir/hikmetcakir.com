@@ -12,8 +12,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -33,18 +35,21 @@ public class ArticleServiceTest {
     ArticleRepository articleRepository;
 
     @Test
-    void query_givenArticleIdAndExistOneArticleInDB_returnOneRecordAsList() {
+    void query_givenArticleTitleMatches_returnOneRecordAsList() {
         // region Given
-        String articleId = UUID.randomUUID().toString();
-        ArticleQueryRequest request = ArticleQueryRequest.builder()
-                .id(articleId)
+        ArticleEntity article = ArticleEntity.builder()
+                .id("1")
+                .title("Spring Boot")
+                .topicId(1)
                 .build();
 
-        ArticleEntity mockEntity = ArticleEntity.builder()
-                .id(articleId)
-                .build();
+        ArticleQueryRequest request = new ArticleQueryRequest();
+        request.setTitle("spring");
+        request.setPage(0);
+        request.setSize(10);
 
-        when(articleRepository.findAll(any(Example.class))).thenReturn(List.of(mockEntity));
+        Page<ArticleEntity> page = new PageImpl<>(List.of(article));
+        when(articleRepository.findAll(any(Example.class), any(PageRequest.class))).thenReturn(page);
         // endregion
 
         // region When
@@ -52,28 +57,24 @@ public class ArticleServiceTest {
         // endregion
 
         // region Then
-        assertThat(result)
-                .isNotNull()
-                .hasSize(1)
-                .first()
-                .extracting(ArticleSummary::getId)
-                .isEqualTo(articleId);
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0).getTitle()).contains("Spring Boot");
         // endregion
     }
 
     @Test
-    void query_givenArticleIdAndNotExistArticleInDB_returnOneRecordAsList() {
+    void query_givenTopicIdMatchesTwoArticles_returnTwoRecordsAsList() {
         // region Given
-        String articleId = UUID.randomUUID().toString();
-        ArticleQueryRequest request = ArticleQueryRequest.builder()
-                .id(articleId)
-                .build();
+        ArticleEntity article1 = ArticleEntity.builder().id("1").title("Spring Boot").topicId(1).build();
+        ArticleEntity article2 = ArticleEntity.builder().id("2").title("Java Concurrency").topicId(1).build();
 
-        ArticleEntity mockEntity = ArticleEntity.builder()
-                .id(articleId)
-                .build();
+        ArticleQueryRequest request = new ArticleQueryRequest();
+        request.setTopicId(1);
+        request.setPage(0);
+        request.setSize(10);
 
-        when(articleRepository.findAll(any(Example.class))).thenReturn(new ArrayList());
+        Page<ArticleEntity> page = new PageImpl<>(List.of(article1, article2));
+        when(articleRepository.findAll(any(Example.class), any(PageRequest.class))).thenReturn(page);
         // endregion
 
         // region When
@@ -81,25 +82,20 @@ public class ArticleServiceTest {
         // endregion
 
         // region Then
-        assertThat(result)
-                .isNotNull()
-                .hasSize(0);
+        assertThat(result).hasSize(2);
         // endregion
     }
 
     @Test
-    void query_givenArticleTitleAndExistOneArticleInDB_returnOneRecordAsList() {
+    void query_givenNoArticleMatches_returnEmptyList() {
         // region Given
-        String articleTitle = "DummyTitle";
-        ArticleQueryRequest request = ArticleQueryRequest.builder()
-                .id(articleTitle)
-                .build();
+        ArticleQueryRequest request = new ArticleQueryRequest();
+        request.setTitle("Data Structures & Algorithms");
+        request.setPage(0);
+        request.setSize(10);
 
-        ArticleEntity mockEntity = ArticleEntity.builder()
-                .title(articleTitle)
-                .build();
-
-        when(articleRepository.findAll(any(Example.class))).thenReturn(List.of(mockEntity));
+        Page<ArticleEntity> page = new PageImpl<>(List.of());
+        when(articleRepository.findAll(any(Example.class), any(PageRequest.class))).thenReturn(page);
         // endregion
 
         // region When
@@ -107,28 +103,22 @@ public class ArticleServiceTest {
         // endregion
 
         // region Then
-        assertThat(result)
-                .isNotNull()
-                .hasSize(1)
-                .first()
-                .extracting(ArticleSummary::getTitle)
-                .isEqualTo(articleTitle);
+        assertThat(result).isEmpty();
         // endregion
     }
 
     @Test
-    void query_givenArticleTopicIdAndExistOneArticleInDB_returnOneRecordAsList() {
+    void query_givenPaginationSizeOneAndTwoArticlesInDB_returnOneRecordAsList() {
         // region Given
-        Integer articleTopicId = 1;
-        ArticleQueryRequest request = ArticleQueryRequest.builder()
-                .topicId(articleTopicId)
-                .build();
+        ArticleEntity article1 = ArticleEntity.builder()
+                .id("1").title("Spring Boot").topicId(1).build();
 
-        ArticleEntity mockEntity = ArticleEntity.builder()
-                .topicId(articleTopicId)
-                .build();
+        ArticleQueryRequest request = new ArticleQueryRequest();
+        request.setPage(0);
+        request.setSize(1);
 
-        when(articleRepository.findAll(any(Example.class))).thenReturn(List.of(mockEntity));
+        Page<ArticleEntity> page = new PageImpl<>(List.of(article1), PageRequest.of(0, 1), 2);
+        when(articleRepository.findAll(any(Example.class), any(PageRequest.class))).thenReturn(page);
         // endregion
 
         // region When
@@ -136,9 +126,8 @@ public class ArticleServiceTest {
         // endregion
 
         // region Then
-        assertThat(result)
-                .isNotNull()
-                .hasSize(1);
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0).getId()).isEqualTo("1");
         // endregion
     }
 
