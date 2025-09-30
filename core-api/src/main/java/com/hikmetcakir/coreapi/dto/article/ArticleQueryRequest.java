@@ -13,7 +13,7 @@ public class ArticleQueryRequest {
 
     private String id;
     private String title;
-    private Integer topicId;
+    private String categoryId;
     private int size;
     private int page;
 }

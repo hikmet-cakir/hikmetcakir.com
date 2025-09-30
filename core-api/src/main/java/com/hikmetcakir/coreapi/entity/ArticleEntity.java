@@ -20,7 +20,7 @@ public class ArticleEntity {
     private String id;
     private String title;
     private String content;
-    private Integer topicId;
+    private String categoryId;
     private String createdBy;
     private LocalDateTime created;
     private String updatedBy;

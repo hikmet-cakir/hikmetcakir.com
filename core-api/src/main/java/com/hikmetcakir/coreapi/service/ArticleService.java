@@ -12,9 +12,13 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,32 +28,45 @@ public class ArticleService {
 
     private ArticleRepository articleRepository;
 
+    private CategoryService categoryService;
+
+    private MongoTemplate mongoTemplate;
+
     public List<ArticleSummary> query(ArticleQueryRequest request) {
-        ArticleEntity filter  = ArticleEntity.builder()
-                .id(request.getId())
-                .title(request.getTitle())
-                .topicId(request.getTopicId())
-                .build();
+        Query query = new Query();
+        List<Criteria> criteriaList = new ArrayList<>();
 
-        ExampleMatcher matcher = ExampleMatcher.matchingAll()
-                .withIgnoreNullValues()
-                .withIgnoreCase()
-                .withMatcher(ArticleEntity.Fields.title, match -> match.stringMatcher(ExampleMatcher.StringMatcher.CONTAINING))
-                .withMatcher(ArticleEntity.Fields.id, ExampleMatcher.GenericPropertyMatcher::exact)
-                .withMatcher(ArticleEntity.Fields.topicId, ExampleMatcher.GenericPropertyMatcher::exact);
+        if (request.getId() != null) {
+            criteriaList.add(Criteria.where("id").is(request.getId()));
+        }
+        if (request.getTitle() != null && !request.getTitle().isBlank()) {
+            criteriaList.add(Criteria.where("title").regex(request.getTitle(), "i"));
+        }
 
-        Example<ArticleEntity> example = Example.of(filter, matcher);
+        if (request.getCategoryId() != null) {
+            List<String> categoryIds = new ArrayList<>();
+            categoryIds.add(request.getCategoryId());
+            categoryIds.addAll(categoryService.getAllChildCategoryIds(request.getCategoryId()));
+            criteriaList.add(Criteria.where("categoryId").in(categoryIds));
+        }
+
+        if (!criteriaList.isEmpty()) {
+            query.addCriteria(new Criteria().andOperator(criteriaList.toArray(new Criteria[0])));
+        }
 
         PageRequest pageRequest = PageRequest.of(request.getPage(), request.getSize());
-        Page<ArticleEntity> articleEntityPageList = articleRepository.findAll(example, pageRequest);
-        return articleEntityPageList.map(ArticleMapper.INSTANCE::to).getContent();
+        query.with(pageRequest);
+
+        List<ArticleEntity> articleEntityList = mongoTemplate.find(query, ArticleEntity.class);
+
+        return articleEntityList.stream().map(ArticleMapper.INSTANCE::to).toList();
     }
 
     public String save(ArticleSaveRequest request) {
         ArticleEntity articleEntity = ArticleEntity.builder()
                 .title(request.getTitle())
                 .content(request.getContent())
-                .topicId(request.getTopicId())
+                .categoryId(request.getCategoryId())
                 .createdBy(request.getCreatedBy())
                 .created(LocalDateTime.now())
                 .deleted(false)

@@ -15,6 +15,8 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Query;
 
 import java.util.List;
 import java.util.Optional;
@@ -34,13 +36,19 @@ public class ArticleServiceTest {
     @Mock
     ArticleRepository articleRepository;
 
+    @Mock
+    CategoryService categoryService;
+
+    @Mock
+    MongoTemplate mongoTemplate;
+
     @Test
     void query_givenArticleTitleMatches_returnOneRecordAsList() {
         // region Given
         ArticleEntity article = ArticleEntity.builder()
                 .id("1")
                 .title("Spring Boot")
-                .topicId(1)
+                .categoryId("1")
                 .build();
 
         ArticleQueryRequest request = new ArticleQueryRequest();
@@ -48,8 +56,9 @@ public class ArticleServiceTest {
         request.setPage(0);
         request.setSize(10);
 
-        Page<ArticleEntity> page = new PageImpl<>(List.of(article));
-        when(articleRepository.findAll(any(Example.class), any(PageRequest.class))).thenReturn(page);
+        // Mock mongoTemplate
+        when(mongoTemplate.find(any(Query.class), eq(ArticleEntity.class)))
+                .thenReturn(List.of(article));
         // endregion
 
         // region When
@@ -63,18 +72,22 @@ public class ArticleServiceTest {
     }
 
     @Test
-    void query_givenTopicIdMatchesTwoArticles_returnTwoRecordsAsList() {
+    void query_givenCategoryIdWithChildCategories_returnAllMatchingArticles() {
         // region Given
-        ArticleEntity article1 = ArticleEntity.builder().id("1").title("Spring Boot").topicId(1).build();
-        ArticleEntity article2 = ArticleEntity.builder().id("2").title("Java Concurrency").topicId(1).build();
+        ArticleEntity article1 = ArticleEntity.builder().id("1").title("Spring Boot").categoryId("1").build();
+        ArticleEntity article2 = ArticleEntity.builder().id("2").title("Java Concurrency").categoryId("2").build();
 
         ArticleQueryRequest request = new ArticleQueryRequest();
-        request.setTopicId(1);
+        request.setCategoryId("1");
         request.setPage(0);
         request.setSize(10);
 
-        Page<ArticleEntity> page = new PageImpl<>(List.of(article1, article2));
-        when(articleRepository.findAll(any(Example.class), any(PageRequest.class))).thenReturn(page);
+        // Mock alt kategoriler
+        when(categoryService.getAllChildCategoryIds("1")).thenReturn(List.of("2"));
+
+        // Mock mongoTemplate
+        when(mongoTemplate.find(any(Query.class), eq(ArticleEntity.class)))
+                .thenReturn(List.of(article1, article2));
         // endregion
 
         // region When
@@ -83,6 +96,7 @@ public class ArticleServiceTest {
 
         // region Then
         assertThat(result).hasSize(2);
+        assertThat(result).extracting(ArticleSummary::getId).containsExactlyInAnyOrder("1", "2");
         // endregion
     }
 
@@ -94,8 +108,8 @@ public class ArticleServiceTest {
         request.setPage(0);
         request.setSize(10);
 
-        Page<ArticleEntity> page = new PageImpl<>(List.of());
-        when(articleRepository.findAll(any(Example.class), any(PageRequest.class))).thenReturn(page);
+        when(mongoTemplate.find(any(Query.class), eq(ArticleEntity.class)))
+                .thenReturn(List.of());
         // endregion
 
         // region When
@@ -108,36 +122,12 @@ public class ArticleServiceTest {
     }
 
     @Test
-    void query_givenPaginationSizeOneAndTwoArticlesInDB_returnOneRecordAsList() {
-        // region Given
-        ArticleEntity article1 = ArticleEntity.builder()
-                .id("1").title("Spring Boot").topicId(1).build();
-
-        ArticleQueryRequest request = new ArticleQueryRequest();
-        request.setPage(0);
-        request.setSize(1);
-
-        Page<ArticleEntity> page = new PageImpl<>(List.of(article1), PageRequest.of(0, 1), 2);
-        when(articleRepository.findAll(any(Example.class), any(PageRequest.class))).thenReturn(page);
-        // endregion
-
-        // region When
-        List<ArticleSummary> result = articleService.query(request);
-        // endregion
-
-        // region Then
-        assertThat(result).hasSize(1);
-        assertThat(result.get(0).getId()).isEqualTo("1");
-        // endregion
-    }
-
-    @Test
     void save_givenFullFilledArticle_saveAndReturnGeneratedID() {
         // region Given
         ArticleSaveRequest request = ArticleSaveRequest.builder()
                 .title("DummyTitle")
                 .content("DummyContent")
-                .topicId(1)
+                .categoryId("DummyCategory")
                 .createdBy("75872")
                 .build();
 
@@ -164,7 +154,7 @@ public class ArticleServiceTest {
         ArticleSaveRequest request = ArticleSaveRequest.builder()
                 .title("DummyTitle")
                 .content("DummyContent")
-                .topicId(1)
+                .categoryId("DummyCategory")
                 .createdBy("75872")
                 .build();
 

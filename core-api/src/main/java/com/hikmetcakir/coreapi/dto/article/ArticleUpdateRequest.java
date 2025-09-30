@@ -13,6 +13,6 @@ public class ArticleUpdateRequest {
 
     private String title;
     private String content;
-    private String topicId;
+    private String categoryId;
     private String updatedBy;
 }
