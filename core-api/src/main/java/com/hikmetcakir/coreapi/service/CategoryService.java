@@ -1,5 +1,6 @@
 package com.hikmetcakir.coreapi.service;
 
+import com.hikmetcakir.coreapi.dto.category.CategoryHierarchy;
 import com.hikmetcakir.coreapi.dto.category.CategorySaveRequest;
 import com.hikmetcakir.coreapi.entity.CategoryEntity;
 import com.hikmetcakir.coreapi.respository.CategoryRepository;
@@ -39,5 +40,35 @@ public class CategoryService {
                 .map(CategoryEntity::getId)
                 .orElseThrow();
     }
- 
+
+    public List<CategoryHierarchy> queryCategoryHierarchy(List<Integer> levels) {
+        if (levels == null || levels.isEmpty()) {
+            return List.of();
+        }
+
+        int maxLevel = levels.stream().max(Integer::compareTo).orElse(1);
+
+        List<CategoryEntity> roots = categoryRepository.findByParentIdIsNull();
+
+        return roots.stream()
+                .map(root -> mapToDto(root, 1, maxLevel))
+                .toList();
+    }
+
+    private CategoryHierarchy mapToDto(CategoryEntity entity, int currentLevel, int maxLevel) {
+        List<CategoryHierarchy> children = List.of();
+
+        if (currentLevel < maxLevel) {
+            List<CategoryEntity> childEntities = categoryRepository.findByParentId(entity.getId());
+            children = childEntities.stream()
+                    .map(child -> mapToDto(child, currentLevel + 1, maxLevel))
+                    .toList();
+        }
+
+        return CategoryHierarchy.builder()
+                .id(entity.getId())
+                .name(entity.getName())
+                .children(children)
+                .build();
+    }
 }

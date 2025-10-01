@@ -8,4 +8,6 @@ import java.util.List;
 public interface CategoryRepository extends MongoRepository<CategoryEntity, String> {
 
     List<CategoryEntity> findByParentId(String parentId);
+
+    List<CategoryEntity> findByParentIdIsNull();
 }
