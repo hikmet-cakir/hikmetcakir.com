@@ -1,11 +1,13 @@
 package com.hikmetcakir.coreapi.service;
 
+import com.hikmetcakir.coreapi.dto.category.CategorySaveRequest;
 import com.hikmetcakir.coreapi.entity.CategoryEntity;
 import com.hikmetcakir.coreapi.respository.CategoryRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CategoryService {
@@ -25,4 +27,17 @@ public class CategoryService {
         }
         return ids;
     }
+
+    public String save(CategorySaveRequest request) {
+        CategoryEntity categoryEntity = CategoryEntity.builder()
+                .name(request.getName())
+                .parentId(request.getParentId())
+                .deleted(false)
+                .build();
+        return Optional.of(categoryEntity)
+                .map(categoryRepository::save)
+                .map(CategoryEntity::getId)
+                .orElseThrow();
+    }
+ 
 }

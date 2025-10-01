@@ -18,7 +18,5 @@ public class CategoryEntity {
     private String id;
     private String name;
     private String parentId;
-    private String type;
-
-
+    private boolean deleted;
 }
