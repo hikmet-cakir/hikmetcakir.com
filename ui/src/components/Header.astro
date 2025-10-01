@@ -1,5 +1,6 @@
 ---
- 
+const res = await fetch('http://localhost:8080/category/hierarchy?levels=1,2');
+const categories = await res.json();
 ---
 <header class="w-full bg-black">
   <div class="flex justify-between items-center px-6 py-4"> 
@@ -7,11 +8,31 @@
       Hikmet Cakir
     </div>
  
-    <nav class="flex gap-6 text-white">
-      <a href="#veri" class="hover:text-gray-300 whitespace-nowrap">Data Structures & Algorithms</a>
-      <a href="#veri" class="hover:text-gray-300 whitespace-nowrap">SQL</a> 
-      <a href="#spring" class="hover:text-gray-300 whitespace-nowrap">Spring Boot</a> 
-      <a href="#java" class="hover:text-gray-300 whitespace-nowrap">Java</a> 
+    <nav class="flex gap-6 text-white relative">
+      {categories.map(root => (
+        <div class="group relative" key={root.id}>
+          <a
+            href={`#${root.id}`}
+            class="hover:text-gray-300 whitespace-nowrap px-3 py-2 rounded-md transition-colors duration-200"
+          >
+            {root.name}
+          </a>
+
+          {root.children && root.children.length > 0 && (
+            <div class="absolute hidden group-hover:flex flex-col bg-black mt-2 rounded-md shadow-lg min-w-[180px] z-50">
+              {root.children.map(child => (
+                <a
+                  key={child.id}
+                  href={`#${child.id}`}
+                  class="block px-4 py-2 hover:bg-gray-700 hover:text-white transition-colors duration-150"
+                >
+                  {child.name}
+                </a>
+              ))}
+            </div>
+          )}
+        </div>
+      ))}
     </nav>
   </div>
 </header>
