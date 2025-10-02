@@ -1,0 +1,49 @@
+--- 
+import '../../styles/cms-login.css';
+---
+
+<html>
+    <head> 
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+    </head>
+    <body>
+        <div class="overlay"> 
+        <form> 
+        <div class="con"> 
+        <header class="head-form">
+            <h2>Log In</h2>  
+        </header> 
+        <br>
+        <div class="field-set"> 
+                <span class="input-item">
+                <i class="fa fa-envelope"></i>
+                </span> 
+                <input class="form-input" id="txt-input" type="text" placeholder="Email" required> 
+            <br>  
+            <span class="input-item">
+                <i class="fa fa-key"></i>
+            </span> 
+            <input class="form-input" type="password" placeholder="Password" id="pwd"  name="password" required> 
+            <span>
+                <i class="fa fa-eye" aria-hidden="true" type="button" id="eye"></i>
+            </span> 
+            <br> 
+            <button class="log-in"> Log In </button>
+        </div> 
+        <div class="other"> 
+            <button class="btn submits frgt-pass">Forgot Password</button>  
+            <button class="btn submits sign-up">Sign Up  
+            <i class="fa fa-user-plus" aria-hidden="true"></i>
+            </button>
+        </div> 
+        </div> 
+        </form>
+        </div>
+
+        <script type="module">
+            import { initPasswordToggle } from '../../scripts/cms-login.js';
+            initPasswordToggle();
+        </script>
+    </body>
+</html>
+ 
