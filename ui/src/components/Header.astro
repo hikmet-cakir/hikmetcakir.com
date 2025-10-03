@@ -11,12 +11,12 @@ const categories = await res.json();
       Hikmet Cakir
     </div>
  
-    <nav class="flex gap-5 text-white relative" id="navbar">
+    <nav class="flex text-white relative" id="navbar">
        {categories.map(root => (
          <div class="relative" key={root.id}>
            <a
              href={`#${root.id}`}
-             class="hover:text-gray-300 hover:bg-gray-700 whitespace-nowrap w-full px-3 py-2 rounded-md transition-colors duration-200"
+             class="hover:text-gray-300 hover:bg-gray-700 whitespace-nowrap w-full mr-2 px-2 py-2 rounded-md transition-colors duration-200"
            >
              {root.name}
            </a>
