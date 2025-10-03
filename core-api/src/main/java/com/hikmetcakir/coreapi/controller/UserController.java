@@ -1,0 +1,23 @@
+package com.hikmetcakir.coreapi.controller;
+
+import com.hikmetcakir.coreapi.dto.user.UserQueryRequest;
+import com.hikmetcakir.coreapi.dto.user.UserQueryResponse;
+import com.hikmetcakir.coreapi.service.UserService;
+import lombok.AllArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/user")
+@AllArgsConstructor
+public class UserController {
+
+    private final UserService userService;
+
+    @GetMapping
+    public UserQueryResponse query(@RequestBody UserQueryRequest request) {
+        return userService.query(request);
+    }
+}
