@@ -1,14 +1,16 @@
 --- 
 import '../../styles/cms-login.css';
+import '../../scripts/cms-login.js';
 ---
 
 <html>
-    <head> 
+    <head>  
+        <meta charset="UTF-8" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
     </head>
     <body>
         <div class="overlay"> 
-        <form> 
+        <form id="login-form"> 
         <div class="con"> 
         <header class="head-form">
             <h2>Log In</h2>  
@@ -40,10 +42,46 @@ import '../../styles/cms-login.css';
         </form>
         </div>
 
-        <script type="module">
-            import { initPasswordToggle } from '../../scripts/cms-login.js';
-            initPasswordToggle();
-        </script>
+
+    <script type="module">   
+      const form = document.getElementById("login-form");
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const email = document.getElementById("txt-input").value;
+        const password = document.getElementById("pwd").value;
+
+        console.log('helloworld');
+        console.log(email);
+        console.log(password);
+        try {
+          const response = await fetch("http://localhost:8080/user", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ email, password }),
+          }); 
+          if (!response.ok) {
+            alert("Sunucu hatası: " + response.status);
+            return;
+          }
+
+          const data = await response.json().catch(() => null);
+        console.log(data);
+          if (data && data.email) {
+            alert("Hoş geldin, " + data.name + " " + data.surname);
+            console.log("Login başarılı:", data);
+          } else {
+            alert("Email veya şifre yanlış!");
+          }
+        } catch (error) {
+          console.error("İstek hatası:", error);
+          alert("Bağlantı hatası!");
+        }
+      });
+    </script>
     </body>
 </html>
  
