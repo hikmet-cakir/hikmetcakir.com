@@ -4,6 +4,7 @@ import com.hikmetcakir.coreapi.dto.article.ArticleQueryRequest;
 import com.hikmetcakir.coreapi.dto.article.ArticleSaveRequest;
 import com.hikmetcakir.coreapi.dto.article.ArticleSummary;
 import com.hikmetcakir.coreapi.dto.article.ArticleUpdateRequest;
+import com.hikmetcakir.coreapi.dto.event.ArticleViewEvent;
 import com.hikmetcakir.coreapi.entity.ArticleEntity;
 import com.hikmetcakir.coreapi.mapper.ArticleMapper;
 import com.hikmetcakir.coreapi.respository.ArticleRepository;
@@ -15,6 +16,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -32,12 +34,15 @@ public class ArticleService {
 
     private MongoTemplate mongoTemplate;
 
+    private final KafkaTemplate<String, ArticleViewEvent> viewKafkaTemplate;
+
     public List<ArticleSummary> query(ArticleQueryRequest request) {
         Query query = new Query();
         List<Criteria> criteriaList = new ArrayList<>();
 
         if (request.getId() != null) {
             criteriaList.add(Criteria.where("id").is(request.getId()));
+            viewKafkaTemplate.send("article-view", new ArticleViewEvent(request.getId(), "49001", LocalDateTime.now()));
         }
         if (request.getTitle() != null && !request.getTitle().isBlank()) {
             criteriaList.add(Criteria.where("title").regex(request.getTitle(), "i"));
