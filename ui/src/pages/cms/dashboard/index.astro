@@ -7,74 +7,54 @@ import '../../../styles/dashboard.css';
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Admin Dashboard</title>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    <title>CMS Panel</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
     />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
     />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"rel="stylesheet" />
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <div class="container">
-      <!-- Sidebar -->
+    <div class="container"> 
       <div class="sidebar">
         <div class="logo">
-          <h1>Admin<span>Panel</span></h1>
+          <h1>CMS<span>Panel</span></h1>
         </div>
         <div class="nav-menu">
-          <div class="menu-heading">Main</div>
+          <div class="menu-heading">DASHBOARD</div>
           <div class="nav-item active">
-            <i class="fas fa-chart-pie"></i>
-            <span>Dashboard</span>
+            <i class="fas fa-file-alt"></i>
+            <span>Summary</span>
+          </div>  
+          <div class="menu-heading">CONTENT</div>
+          <div class="nav-item">
+            <i class="fas fa-file-alt"></i> 
+            <span>Article</span>
           </div>
           <div class="nav-item">
-            <i class="fas fa-users"></i>
-            <span>Users</span>
-          </div>
-          <div class="nav-item">
-            <i class="fas fa-box"></i>
-            <span>Products</span>
-          </div>
-          <div class="nav-item">
-            <i class="fas fa-shopping-cart"></i>
-            <span>Orders</span>
+            <i class="fas fa-tags"></i>
+            <span>Category</span>
           </div>
 
-          <div class="menu-heading">Reports</div>
+          <div class="menu-heading">USER</div>
+          <div class="nav-item">
+            <i class="fas fa-user-shield"></i>
+            <span>Admin</span>
+          </div> 
+          <div class="nav-item">
+            <i class="fas fa-pen-nib"></i>
+            <span>Author</span>
+          </div>
+
+          <div class="menu-heading">REPORTS</div>
           <div class="nav-item">
             <i class="fas fa-chart-line"></i>
             <span>Analytics</span>
-          </div>
-          <div class="nav-item">
-            <i class="fas fa-coins"></i>
-            <span>Sales</span>
-          </div>
-
-          <div class="menu-heading">Admin</div>
-          <div class="nav-item">
-            <i class="fas fa-cog"></i>
-            <span>Settings</span>
-          </div>
-          <div class="nav-item">
-            <i class="fas fa-bell"></i>
-            <span>Notifications</span>
-          </div>
-          <div class="nav-item">
-            <i class="fas fa-shield-alt"></i>
-            <span>Security</span>
-          </div>
+          </div> 
         </div>
       </div>
 
-      <!-- Header -->
       <div class="header">
         <div class="search-bar">
           <i class="fas fa-search"></i>
@@ -99,7 +79,6 @@ import '../../../styles/dashboard.css';
         </div>
       </div>
 
-      <!-- Main Content -->
       <div class="main-content">
         <div class="page-title">
           <div class="title">Dashboard</div>
@@ -114,14 +93,13 @@ import '../../../styles/dashboard.css';
             </button>
           </div>
         </div>
-
-        <!-- Stats Cards -->
+ 
         <div class="stats-cards">
           <div class="stat-card">
             <div class="card-header">
               <div>
                 <div class="card-value">1,504</div>
-                <div class="card-label">Total Users</div>
+                <div class="card-label">Daily Visitors</div>
               </div>
               <div class="card-icon purple">
                 <i class="fas fa-users"></i>
@@ -136,8 +114,8 @@ import '../../../styles/dashboard.css';
           <div class="stat-card">
             <div class="card-header">
               <div>
-                <div class="card-value">$12,750</div>
-                <div class="card-label">Total Revenue</div>
+                <div class="card-value">300 Hours</div>
+                <div class="card-label">Daily Average Time per Visitor</div>
               </div>
               <div class="card-icon blue">
                 <i class="fas fa-dollar-sign"></i>
@@ -152,8 +130,8 @@ import '../../../styles/dashboard.css';
           <div class="stat-card">
             <div class="card-header">
               <div>
-                <div class="card-value">324</div>
-                <div class="card-label">Total Orders</div>
+                <div class="card-value">Java</div>
+                <div class="card-label">Most Popular Category</div>
               </div>
               <div class="card-icon green">
                 <i class="fas fa-shopping-cart"></i>
@@ -168,8 +146,8 @@ import '../../../styles/dashboard.css';
           <div class="stat-card">
             <div class="card-header">
               <div>
-                <div class="card-value">85%</div>
-                <div class="card-label">Conversion Rate</div>
+                <div class="card-value">Binary Search</div>
+                <div class="card-label">Most Popular Article</div>
               </div>
               <div class="card-icon orange">
                 <i class="fas fa-chart-line"></i>
@@ -182,7 +160,6 @@ import '../../../styles/dashboard.css';
           </div>
         </div>
 
-        <!-- Recent Orders -->
         <div class="table-card">
           <div class="card-title">
             <h3><i class="fas fa-shopping-bag"></i> Recent Orders</h3>
@@ -233,23 +210,7 @@ import '../../../styles/dashboard.css';
                     <i class="fas fa-eye"></i> View
                   </button>
                 </td>
-              </tr>
-              <tr>
-                <td>#ORD-003</td>
-                <td>Michael Brown</td>
-                <td>13 Mar 2025</td>
-                <td>$79.50</td>
-                <td>
-                  <span class="status active"
-                    ><i class="fas fa-check-circle"></i> Completed</span
-                  >
-                </td>
-                <td>
-                  <button class="btn btn-outline btn-sm">
-                    <i class="fas fa-eye"></i> View
-                  </button>
-                </td>
-              </tr>
+              </tr> 
               <tr>
                 <td>#ORD-004</td>
                 <td>Sarah Davis</td>
@@ -265,23 +226,7 @@ import '../../../styles/dashboard.css';
                     <i class="fas fa-eye"></i> View
                   </button>
                 </td>
-              </tr>
-              <tr>
-                <td>#ORD-005</td>
-                <td>David Wilson</td>
-                <td>11 Mar 2025</td>
-                <td>$185.25</td>
-                <td>
-                  <span class="status active"
-                    ><i class="fas fa-check-circle"></i> Completed</span
-                  >
-                </td>
-                <td>
-                  <button class="btn btn-outline btn-sm">
-                    <i class="fas fa-eye"></i> View
-                  </button>
-                </td>
-              </tr>
+              </tr> 
             </tbody>
           </table>
         </div>
