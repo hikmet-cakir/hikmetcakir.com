@@ -71,8 +71,7 @@ import '../../scripts/cms-login.js';
           const data = await response.json().catch(() => null);
         console.log(data);
           if (data && data.email) {
-            alert("Hoş geldin, " + data.name + " " + data.surname);
-            console.log("Login başarılı:", data);
+            window.location.href = "/cms/dashboard";  
           } else {
             alert("Email veya şifre yanlış!");
           }
