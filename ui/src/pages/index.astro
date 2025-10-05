@@ -8,10 +8,8 @@ const articles = data.articleSummaryList;
 
 ---
 
-<Layout title="Hikmet Cakir Blog">
- <h1 class="text-4xl font-extrabold mb-10">Makaleler</h1>
-
-  <div class="grid gap-10">
+<Layout title="Hikmet Cakir Blog">  
+  <div class="grid" style="padding-left:15%; padding-right:15%;">
     {
         articles.map(article => <ArticlePreview article={article} key={article.id} />)
     }
