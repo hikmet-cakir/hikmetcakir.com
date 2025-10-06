@@ -1,7 +1,8 @@
 --- 
-import '../../../styles/dashboard.css'; 
----
-
+import CmsSidebar from '../../../components/CmsSidebar.astro';
+import CmsHeader from '../../../components/CmsHeader.astro';
+import '../../../styles/dashboard.css';  
+--- 
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -17,67 +18,9 @@ import '../../../styles/dashboard.css';
   </head>
   <body>
     <div class="container"> 
-      <div class="sidebar">
-        <div class="logo">
-          <h1>CMS<span>Panel</span></h1>
-        </div>
-        <div class="nav-menu">
-          <div class="menu-heading">DASHBOARD</div>
-          <div class="nav-item active">
-            <i class="fas fa-file-alt"></i>
-            <span>Summary</span>
-          </div>  
-          <div class="menu-heading">CONTENT</div>
-          <div class="nav-item">
-            <i class="fas fa-file-alt"></i> 
-            <span>Article</span>
-          </div>
-          <div class="nav-item">
-            <i class="fas fa-tags"></i>
-            <span>Category</span>
-          </div>
+      <CmsSidebar />
 
-          <div class="menu-heading">USER</div>
-          <div class="nav-item">
-            <i class="fas fa-user-shield"></i>
-            <span>Admin</span>
-          </div> 
-          <div class="nav-item">
-            <i class="fas fa-pen-nib"></i>
-            <span>Author</span>
-          </div>
-
-          <div class="menu-heading">REPORTS</div>
-          <div class="nav-item">
-            <i class="fas fa-chart-line"></i>
-            <span>Analytics</span>
-          </div> 
-        </div>
-      </div>
-
-      <div class="header">
-        <div class="search-bar">
-          <i class="fas fa-search"></i>
-          <input type="text" placeholder="Search..." />
-        </div>
-        <div class="header-actions">
-          <div class="notification">
-            <i class="fas fa-bell"></i>
-            <div class="badge">3</div>
-          </div>
-          <div class="notification">
-            <i class="fas fa-envelope"></i>
-            <div class="badge">5</div>
-          </div>
-          <div class="user-profile">
-            <div class="profile-img">JD</div>
-            <div class="user-info">
-              <div class="user-name">John Doe</div>
-              <div class="user-role">Administrator</div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <CmsHeader />
 
       <div class="main-content">
         <div class="page-title">
