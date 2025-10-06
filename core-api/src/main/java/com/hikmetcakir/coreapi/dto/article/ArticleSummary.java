@@ -16,6 +16,7 @@ public class ArticleSummary {
     private String id;
     private String title;
     private String content;
+    private String categoryId;
     private String createdBy;
     private LocalDateTime created;
 }
