@@ -40,6 +40,8 @@ public class ArticleService {
         Query query = new Query();
         List<Criteria> criteriaList = new ArrayList<>();
 
+        criteriaList.add(Criteria.where("deleted").is(false));
+
         if (request.getId() != null) {
             criteriaList.add(Criteria.where("id").is(request.getId()));
             viewKafkaTemplate.send("article-view", new ArticleViewEvent(request.getId(), "49001", LocalDateTime.now()));
