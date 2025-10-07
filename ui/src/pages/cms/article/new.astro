@@ -23,49 +23,49 @@ const articles = data.articleSummaryList || [];
   <body>
     <div class="container"> 
       <CmsSidebar />
-
-      <CmsHeader />
+  <CmsHeader />
 
   <div class="main-content">
-    <h1>Add New Document</h1>
-
-    <form id="docForm">
-      <!-- Document Title -->
-      <div class="form-group">
-        <label for="title">Document Title</label>
-        <input type="text" id="title" name="title" placeholder="Enter document title" required />
-      </div>
-
-      <!-- Content Editor -->
-      <div class="form-group">
-        <label>Content</label>
-        <div id="editorToolbar">
-          <button type="button" data-command="bold"><b>B</b></button>
-          <button type="button" data-command="italic"><i>I</i></button>
-          <button type="button" data-command="underline"><u>U</u></button>
-          <select id="fontSize">
-            <option value="1">Small</option>
-            <option value="3" selected>Normal</option>
-            <option value="5">Large</option>
-            <option value="7">Huge</option>
-          </select>
-          <input type="color" id="fontColor" value="#000000" />
-          <button type="button" id="addImage">Add Image</button>
-          <button type="button" id="addVideo">Add Video</button>
-        </div>
-
-        <div id="editor" contenteditable="true" style="border:1px solid #ccc; min-height:200px; padding:10px;"></div>
-      </div>
-
-      <button type="submit" class="btn btn-primary">Add Document</button>
-    </form>
-  </div>
+ 
+<div id="editor-container" style="height:400px;"></div>
+</div>
 </div>
 
-<script  client:only="react">
-  const editor = new Quill('#editor', {
-    theme: 'snow',
-    modules: { toolbar: true }
+<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+ 
+
+<script is:raw>
+  document.addEventListener("DOMContentLoaded", () => {
+    const script = document.createElement("script");
+    script.src = "https://cdn.quilljs.com/1.3.6/quill.js";
+    script.onload = () => {
+      var quill = new Quill("#editor-container", {
+        theme: "snow",
+        modules: {
+          toolbar: [
+            ["bold", "italic", "underline", "strike"],        // toggled buttons
+            ["blockquote", "code-block"],
+
+            [{ header: 1 }, { header: 2 }],               // custom button values
+            [{ list: "ordered" }, { list: "bullet" }],
+            [{ script: "sub" }, { script: "super" }],
+            [{ indent: "-1" }, { indent: "+1" }],         // outdent/indent
+            [{ direction: "rtl" }],                         // text direction
+
+            [{ size: ["small", false, "large", "huge"] }], // custom dropdown
+            [{ header: [1, 2, 3, 4, 5, 6, false] }],
+
+            [{ color: [] }, { background: [] }],          // dropdown with defaults from theme
+            [{ font: [] }],
+            [{ align: [] }],
+
+            ["clean"],                                     // remove formatting button
+            ["link", "image", "video"]                     // media
+          ]
+        }
+      });
+    };
+    document.body.appendChild(script);
   });
 </script>
   </body>
