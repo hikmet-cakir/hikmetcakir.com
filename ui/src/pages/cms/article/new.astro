@@ -1,0 +1,72 @@
+--- 
+import CmsSidebar from '../../../components/CmsSidebar.astro';
+import CmsHeader from '../../../components/CmsHeader.astro';
+import '../../../styles/dashboard.css';   
+
+const res = await fetch("http://localhost:8080/article?size=10&page=0");
+const data = await res.json();
+const articles = data.articleSummaryList || [];
+--- 
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CMS Panel</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+    />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container"> 
+      <CmsSidebar />
+
+      <CmsHeader />
+
+  <div class="main-content">
+    <h1>Add New Document</h1>
+
+    <form id="docForm">
+      <!-- Document Title -->
+      <div class="form-group">
+        <label for="title">Document Title</label>
+        <input type="text" id="title" name="title" placeholder="Enter document title" required />
+      </div>
+
+      <!-- Content Editor -->
+      <div class="form-group">
+        <label>Content</label>
+        <div id="editorToolbar">
+          <button type="button" data-command="bold"><b>B</b></button>
+          <button type="button" data-command="italic"><i>I</i></button>
+          <button type="button" data-command="underline"><u>U</u></button>
+          <select id="fontSize">
+            <option value="1">Small</option>
+            <option value="3" selected>Normal</option>
+            <option value="5">Large</option>
+            <option value="7">Huge</option>
+          </select>
+          <input type="color" id="fontColor" value="#000000" />
+          <button type="button" id="addImage">Add Image</button>
+          <button type="button" id="addVideo">Add Video</button>
+        </div>
+
+        <div id="editor" contenteditable="true" style="border:1px solid #ccc; min-height:200px; padding:10px;"></div>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Add Document</button>
+    </form>
+  </div>
+</div>
+
+<script  client:only="react">
+  const editor = new Quill('#editor', {
+    theme: 'snow',
+    modules: { toolbar: true }
+  });
+</script>
+  </body>
+</html>

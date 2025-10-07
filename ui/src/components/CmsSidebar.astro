@@ -1,5 +1,7 @@
 ---
 import '../styles/cms-sidebar.css'; 
+
+const currentPath = Astro.url.pathname;
 ---
 
 <div class="sidebar">
@@ -8,17 +10,17 @@ import '../styles/cms-sidebar.css';
     </div>
     <div class="nav-menu">
         <div class="menu-heading">DASHBOARD</div>
-        <div class="nav-item active">
+        <div class={`nav-item ${currentPath === '/cms/dashboard' ? 'active' : ''}`}>
         <i class="fas fa-file-alt"></i>
         <span>Summary</span>
         </div>  
         <div class="menu-heading">CONTENT</div>
-        <a href="/cms/article" class="nav-item" >  
+        <a href="/cms/article" class={`nav-item ${currentPath === '/cms/article' ? 'active' : ''}`} >  
         <i class="fas fa-file-alt"></i> 
         <span>Article</span> 
         </a>
         
-        <a href="/category" class="nav-item" >  
+        <a href="/category" class="nav-item">  
         <i class="fas fa-tags"></i>
         <span>Category</span> 
         </a>
