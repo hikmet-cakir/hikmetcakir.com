@@ -1,5 +1,6 @@
 package com.hikmetcakir.coreapi.controller;
 
+import com.hikmetcakir.coreapi.dto.category.Category;
 import com.hikmetcakir.coreapi.dto.category.CategoryHierarchy;
 import com.hikmetcakir.coreapi.dto.category.CategorySaveRequest;
 import com.hikmetcakir.coreapi.dto.category.CategorySaveResponse;
@@ -25,5 +26,10 @@ public class CategoryController {
     @GetMapping("/hierarchy")
     public List<CategoryHierarchy> queryCategoryHierarchy(@RequestParam(defaultValue = "1") List<Integer> levels) {
         return categoryService.queryCategoryHierarchy(levels);
+    }
+
+    @GetMapping
+    public List<Category> query() {
+        return categoryService.query();
     }
 }

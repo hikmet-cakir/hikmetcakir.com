@@ -1,8 +1,10 @@
 package com.hikmetcakir.coreapi.service;
 
+import com.hikmetcakir.coreapi.dto.category.Category;
 import com.hikmetcakir.coreapi.dto.category.CategoryHierarchy;
 import com.hikmetcakir.coreapi.dto.category.CategorySaveRequest;
 import com.hikmetcakir.coreapi.entity.CategoryEntity;
+import com.hikmetcakir.coreapi.mapper.CategoryMapper;
 import com.hikmetcakir.coreapi.respository.CategoryRepository;
 import org.springframework.stereotype.Service;
 
@@ -70,5 +72,10 @@ public class CategoryService {
                 .name(entity.getName())
                 .children(children)
                 .build();
+    }
+
+    public List<Category> query() {
+        List<CategoryEntity> all = categoryRepository.findAll();
+        return CategoryMapper.INSTANCE.to(all);
     }
 }
