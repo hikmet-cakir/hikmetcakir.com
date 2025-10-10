@@ -10,10 +10,11 @@ const currentPath = Astro.url.pathname;
     </div>
     <div class="nav-menu">
         <div class="menu-heading">DASHBOARD</div>
-        <div class={`nav-item ${currentPath === '/cms/dashboard' ? 'active' : ''}`}>
-        <i class="fas fa-file-alt"></i>
-        <span>Summary</span>
-        </div>  
+        <a href="/cms/dashboard" class={`nav-item ${currentPath === '/cms/dashboard' ? 'active' : ''}`} >  
+        <i class="fas fa-file-alt"></i> 
+        <span>Summary</span> 
+        </a> 
+
         <div class="menu-heading">CONTENT</div>
         <a href="/cms/article" class={`nav-item ${currentPath === '/cms/article' ? 'active' : ''}`} >  
         <i class="fas fa-file-alt"></i> 
