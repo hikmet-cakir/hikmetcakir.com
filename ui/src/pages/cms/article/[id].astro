@@ -12,17 +12,17 @@ export async function getStaticPaths() {
 }
  
 const { id } = Astro.params;
+let article = {}; // ✅ En üstte tanımla
+let categories = []; // ✅ Kategoriler de
 
-if (!id) {
-  throw new Error("Article ID is required");
-}
- 
-const res = await fetch(`http://localhost:8080/article?id=${id}&size=10&page=0`);
-const data = await res.json();
-const article = data.articleSummaryList[0];
+if (id) {
+  const res = await fetch(`http://localhost:8080/article?id=${id}&size=10&page=0`);
+  const data = await res.json();
+  article = data.articleSummaryList[0];
 
-const categoriesRes = await fetch("http://localhost:8080/category");
-const categories = await categoriesRes.json();
+  const categoriesRes = await fetch("http://localhost:8080/category");
+  categories = await categoriesRes.json();
+} 
 --- 
 <!DOCTYPE html>
 <html lang="en">
@@ -48,7 +48,7 @@ const categories = await categoriesRes.json();
  
       <div class="article-title-box">
         <label for="articleTitle">Title</label>
-        <input type="text" id="articleTitle" value={article.title || ""} placeholder="Enter article title..." />
+        <input type="text" id="articleTitle" value={article?.title || ""} placeholder="Enter article title..." />
       </div>
 
       <div class="article-title-box">
@@ -56,12 +56,12 @@ const categories = await categoriesRes.json();
         <select id="articleCategory">
           <option value="">Select category...</option>
           {categories.map(cat => (
-            <option value={cat.id} selected={article.categoryId === cat.id}>{cat.name}</option>
+            <option value={cat.id} selected={article?.categoryId === cat.id}>{cat.name}</option>
           ))}
         </select>
       </div>
   
-      <div id="editor-container" style="height:400px;" set:html={article.content}></div> 
+      <div id="editor-container" style="height:400px;" set:html={article?.content}></div> 
       
       <div class="action-buttons"> 
           <button id="btnSave" class="btn btn-primary">
