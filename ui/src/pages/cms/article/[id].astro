@@ -1,8 +1,11 @@
 --- 
 import CmsSidebar from '../../../components/CmsSidebar.astro';
 import CmsHeader from '../../../components/CmsHeader.astro';
-import '../../../styles/dashboard.css';    
+import '../../../styles/dashboard.css';
 
+export async function getStaticPaths() {
+  return [];
+}
  
 const { id } = Astro.params;
 let articleData = null;
