@@ -78,4 +78,15 @@ public class CategoryService {
         List<CategoryEntity> all = categoryRepository.findAll();
         return CategoryMapper.INSTANCE.to(all);
     }
+
+    public void delete(String id) {
+        List<String> categoryIds = new ArrayList<>();
+        categoryIds.add(id);
+        categoryIds.addAll(getAllChildCategoryIds(id));
+
+        List<CategoryEntity> categoryEntityList = categoryRepository.findByIdInAndDeleted(categoryIds, false);
+        categoryEntityList.forEach(categoryEntity -> categoryEntity.setDeleted(true));
+
+        categoryRepository.saveAll(categoryEntityList);
+    }
 }

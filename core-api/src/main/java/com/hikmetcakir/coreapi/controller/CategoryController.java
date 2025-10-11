@@ -33,4 +33,9 @@ public class CategoryController {
     public List<Category> query() {
         return categoryService.query();
     }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable("id") String id) {
+        categoryService.delete(id);
+    }
 }
