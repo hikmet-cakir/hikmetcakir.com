@@ -22,9 +22,10 @@ const currentPath = Astro.url.pathname;
         </a>
         
         <a href="/category" class="nav-item">  
-        <i class="fas fa-tags"></i>
+        <a href="/cms/category" class={`nav-item ${currentPath === '/cms/category' ? 'active' : ''}`} >  
+        <i class="fas fa-tags"></i> 
         <span>Category</span> 
-        </a>
+        </a> 
 
         <div class="menu-heading">USER</div>
         <div class="nav-item">
