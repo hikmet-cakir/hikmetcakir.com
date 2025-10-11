@@ -1,0 +1,108 @@
+--- 
+import CmsSidebar from '../../../components/CmsSidebar.astro';
+import CmsHeader from '../../../components/CmsHeader.astro';
+import '../../../styles/dashboard.css';   
+
+const res = await fetch("http://localhost:8080/article?size=10&page=0");
+const data = await res.json();
+const articles = data.articleSummaryList || [];
+
+const categoriesRes = await fetch("http://localhost:8080/category");
+const categories = await categoriesRes.json();
+--- 
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <style>
+        .article-title-box {
+  margin: 20px 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.article-title-box label {
+  margin-bottom: 5px;
+  font-weight: 500;
+}
+
+.article-title-box input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 16px;
+}
+    </style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CMS Category Add</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+    />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container"> 
+      <CmsSidebar />
+      <CmsHeader />
+
+  <div class="main-content">
+  
+    <div class="page-title">
+        <div class="title">Category Add</div> 
+    </div>
+
+    <div class="article-title-box">
+        <label for="articleTitle">Name</label>
+        <input type="text" id="articleTitle" placeholder="Enter category name..." />
+    </div>
+
+    <div class="article-title-box">
+    <label for="articleCategory">Parent Category</label>
+    <select id="articleCategory">
+        <option value="">Select category...</option>
+        {categories.map(cat => ( <option value={cat.id}>{cat.name}</option> ))}
+    </select>
+    </div>
+
+    <div class="action-buttons"> 
+        <button id="btnSave" class="btn btn-primary">
+            <i class="fas fa-plus"></i>
+            Save
+        </button>
+    </div> 
+  
+    <script is:raw> 
+        document.addEventListener("DOMContentLoaded", () => {  
+            const btn = document.getElementById("btnSave");
+            const titleInput = document.getElementById("articleTitle"); 
+            const parentCategory = document.getElementById("articleCategory"); 
+ 
+            btn.addEventListener("click", async () => {
+                const name = titleInput.value.trim();   
+                const parentId = parentCategory.value;  
+                if (!name) {
+                    alert("name cannot be empty!");
+                    return;
+                }
+
+         debugger;
+                try {
+                    const res = await fetch("http://localhost:8080/category", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ name, parentId })
+                    });
+
+                    if (!res.ok) throw new Error(await res.text());
+
+                    alert("Category added successfully!");
+                    titleInput.value = "";  
+                    parentId.selectedIndex = 0;;
+                } catch (err) { alert("Error: " + err.message); }
+            }); 
+    });
+    </script>
+  </body>
+</html>
