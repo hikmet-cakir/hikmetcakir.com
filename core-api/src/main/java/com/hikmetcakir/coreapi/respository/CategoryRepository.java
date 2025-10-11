@@ -11,5 +11,7 @@ public interface CategoryRepository extends MongoRepository<CategoryEntity, Stri
 
     List<CategoryEntity> findByParentIdIsNull();
 
+    List<CategoryEntity> findByDeleted(boolean deleted);
+
     List<CategoryEntity> findByIdInAndDeleted(List<String> idList, boolean deleted);
 }

@@ -75,7 +75,7 @@ public class CategoryService {
     }
 
     public List<Category> query() {
-        List<CategoryEntity> all = categoryRepository.findAll();
+        List<CategoryEntity> all = categoryRepository.findByDeleted(false);
         return CategoryMapper.INSTANCE.to(all);
     }
 
