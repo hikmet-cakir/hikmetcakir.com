@@ -3,6 +3,7 @@ package com.hikmetcakir.coreapi.service;
 import com.hikmetcakir.coreapi.dto.category.Category;
 import com.hikmetcakir.coreapi.dto.category.CategoryHierarchy;
 import com.hikmetcakir.coreapi.dto.category.CategorySaveRequest;
+import com.hikmetcakir.coreapi.dto.category.CategoryUpdateRequest;
 import com.hikmetcakir.coreapi.entity.CategoryEntity;
 import com.hikmetcakir.coreapi.mapper.CategoryMapper;
 import com.hikmetcakir.coreapi.respository.CategoryRepository;
@@ -23,7 +24,7 @@ public class CategoryService {
 
     public List<String> getAllChildCategoryIds(String parentId) {
         List<String> ids = new ArrayList<>();
-        List<CategoryEntity> children = categoryRepository.findByParentId(parentId);
+        List<CategoryEntity> children = categoryRepository.findByParentIdAndDeletedFalse(parentId);
         for (CategoryEntity child : children) {
             ids.add(child.getId());
             ids.addAll(getAllChildCategoryIds(child.getId()));
@@ -50,7 +51,7 @@ public class CategoryService {
 
         int maxLevel = levels.stream().max(Integer::compareTo).orElse(1);
 
-        List<CategoryEntity> roots = categoryRepository.findByParentIdIsNull();
+        List<CategoryEntity> roots = categoryRepository.findByParentIdIsNullAndDeletedFalse();
 
         return roots.stream()
                 .map(root -> mapToDto(root, 1, maxLevel))
@@ -61,7 +62,7 @@ public class CategoryService {
         List<CategoryHierarchy> children = List.of();
 
         if (currentLevel < maxLevel) {
-            List<CategoryEntity> childEntities = categoryRepository.findByParentId(entity.getId());
+            List<CategoryEntity> childEntities = categoryRepository.findByParentIdAndDeletedFalse(entity.getId());
             children = childEntities.stream()
                     .map(child -> mapToDto(child, currentLevel + 1, maxLevel))
                     .toList();
@@ -88,5 +89,14 @@ public class CategoryService {
         categoryEntityList.forEach(categoryEntity -> categoryEntity.setDeleted(true));
 
         categoryRepository.saveAll(categoryEntityList);
+    }
+
+    public void update(String id, CategoryUpdateRequest request) {
+        CategoryEntity categoryEntity = categoryRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Category with given id does not exist and cannot be updated"));
+
+        CategoryMapper.INSTANCE.updateEntity(request, categoryEntity);
+
+        categoryRepository.save(categoryEntity);
     }
 }

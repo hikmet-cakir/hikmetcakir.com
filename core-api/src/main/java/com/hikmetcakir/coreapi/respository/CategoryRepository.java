@@ -7,9 +7,9 @@ import java.util.List;
 
 public interface CategoryRepository extends MongoRepository<CategoryEntity, String> {
 
-    List<CategoryEntity> findByParentId(String parentId);
+    List<CategoryEntity> findByParentIdAndDeletedFalse(String parentId);
 
-    List<CategoryEntity> findByParentIdIsNull();
+    List<CategoryEntity> findByParentIdIsNullAndDeletedFalse();
 
     List<CategoryEntity> findByDeleted(boolean deleted);
 
