@@ -17,7 +17,7 @@ const categories = await res.json();
        {categories.map(root => (
          <div class="relative" key={root.id}>
            <a
-             href={`#${root.id}`}
+             href={`/category/${root.id}`}
              class="hover:text-gray-300 hover:bg-gray-700 whitespace-nowrap w-full mr-2 px-2 py-2 rounded-md transition-colors duration-200"
            >
              {root.name}
@@ -30,7 +30,7 @@ const categories = await res.json();
                {root.children.map(child => (
                  <a
                    key={child.id}
-                   href={`#${child.id}`}
+                   href={`/category/${child.id}`}
                    class="block px-4 py-2 hover:bg-gray-700 hover:text-white transition-colors duration-150"
                  >
                    {child.name}

@@ -1,0 +1,27 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import ArticlePreview from "../../components/ArticlePreview.astro";
+
+export const prerender = false;
+
+const { categoryId } = Astro.params;
+
+let apiUrl = `http://localhost:8080/article?size=10&page=0&categoryId=${categoryId}`;
+
+const res = await fetch(apiUrl);
+const data = await res.json();
+const articles = data.articleSummaryList;
+---
+
+<Layout title="Hikmet Cakir Blog">
+  <div class="grid" style="padding-left:15%; padding-right:15%;">
+    {articles.length > 0 ? (
+      articles.map(article => <ArticlePreview article={article} key={article.id} />)
+    ) : (
+      <p class="text-white text-center py-4">Bu kategoriye ait makale bulunamadı.</p>
+    )}
+  </div>
+</Layout>
+
+
+
