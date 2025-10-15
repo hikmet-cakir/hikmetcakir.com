@@ -50,11 +50,7 @@ import '../../scripts/cms-login.js';
         e.preventDefault();
 
         const email = document.getElementById("txt-input").value;
-        const password = document.getElementById("pwd").value;
-
-        console.log('helloworld');
-        console.log(email);
-        console.log(password);
+        const password = document.getElementById("pwd").value; 
         try {
           const response = await fetch("http://localhost:8080/user", {
             method: "POST",
@@ -68,8 +64,7 @@ import '../../scripts/cms-login.js';
             return;
           }
 
-          const data = await response.json().catch(() => null);
-        console.log(data);
+          const data = await response.json().catch(() => null); 
           if (data && data.email) {
             window.location.href = "/cms/dashboard";  
           } else {
