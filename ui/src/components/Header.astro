@@ -14,32 +14,29 @@ const categories = await res.json();
     </div>
  
     <nav class="flex text-white relative" id="navbar">
-       {categories.map(root => (
-         <div class="relative" key={root.id}>
-           <a
-             href={`/category/${root.id}`}
-             class="hover:text-gray-300 hover:bg-gray-700 whitespace-nowrap w-full mr-2 px-2 py-2 rounded-md transition-colors duration-200"
-           >
-             {root.name}
-           </a>
+       {
+        categories.map(root => (
+          <div class="relative" key={root.id}>
+            <a href={`/category/${root.id}`} class="hover:text-gray-300 hover:bg-gray-700 whitespace-nowrap w-full mr-2 px-2 py-2 rounded-md transition-colors duration-200">
+              {root.name}
+            </a>
 
-           {root.children && root.children.length > 0 && (
-             <div
-               class="absolute left-0 top-full flex flex-col bg-black mt-2 rounded-md shadow-lg min-w-[180px] z-50 hidden"
-             >
-               {root.children.map(child => (
-                 <a
-                   key={child.id}
-                   href={`/category/${child.id}`}
-                   class="block px-4 py-2 hover:bg-gray-700 hover:text-white transition-colors duration-150"
-                 >
-                   {child.name}
-                 </a>
-               ))}
-             </div>
-           )}
-         </div>
-       ))}
+            {
+              root.children && root.children.length > 0 && (
+                <div class="absolute left-0 top-full flex flex-col bg-black mt-2 rounded-md shadow-lg min-w-[180px] z-50 hidden">
+                  {
+                    root.children.map(child => (
+                      <a key={child.id} href={`/category/${child.id}`} class="block px-4 py-2 hover:bg-gray-700 hover:text-white transition-colors duration-150"> 
+                        {child.name}
+                      </a>
+                    ))
+                  }
+                </div>
+              )
+            }
+          </div>
+        ))
+       }
 
       <div class="container">
           <input type="text" name="text" class="input" required="" placeholder="Type to search...">
