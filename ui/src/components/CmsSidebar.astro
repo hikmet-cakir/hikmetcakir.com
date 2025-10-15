@@ -1,6 +1,4 @@
 ---
-import '../styles/cms-sidebar.css'; 
-
 const currentPath = Astro.url.pathname;
 ---
 
@@ -21,7 +19,6 @@ const currentPath = Astro.url.pathname;
         <span>Article</span> 
         </a>
         
-        <a href="/category" class="nav-item">  
         <a href="/cms/category" class={`nav-item ${currentPath === '/cms/category' ? 'active' : ''}`} >  
         <i class="fas fa-tags"></i> 
         <span>Category</span> 
