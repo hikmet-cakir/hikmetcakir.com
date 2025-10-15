@@ -12,8 +12,8 @@ export async function getStaticPaths() {
 }
  
 const { id } = Astro.params;
-let article = {}; // ✅ En üstte tanımla
-let categories = []; // ✅ Kategoriler de
+let article = {};
+let categories = [];
 
 if (id) {
   const res = await fetch(`http://localhost:8080/article?id=${id}&size=10&page=0`);
@@ -32,18 +32,18 @@ if (id) {
     <title>CMS Article Edit</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" />
+    <link rel="stylesheet" href="https://cdn.quilljs.com/1.3.6/quill.snow.css">
   </head>
   <body>
     <div class="container"> 
       <CmsSidebar />
       <CmsHeader />
 
-      <div class="main-content">
+      <div class="main-content" data-category-id={id}>
   
       <div class="page-title">
-        <div class="title">Article Add</div> 
+        <div class="title">Article Edit</div> 
       </div>  
  
       <div class="article-title-box">
@@ -66,41 +66,78 @@ if (id) {
       <div class="action-buttons"> 
           <button id="btnSave" class="btn btn-primary">
               <i class="fas fa-plus"></i>
-              Save
+              Edit
           </button> 
       </div> 
 
-      <script is:raw>      
-          document.addEventListener("DOMContentLoaded", () => {  
- 
-          const script = document.createElement("script");
-          script.src = "https://cdn.quilljs.com/1.3.6/quill.js";
-          script.onload = async () => {
-            var quill = new Quill("#editor-container", {
-              theme: "snow",
-              modules: {
-                toolbar: [
-                  ["bold", "italic", "underline", "strike"],
-                  ["blockquote", "code-block"],
-                  [{ header: 1 }, { header: 2 }],
-                  [{ list: "ordered" }, { list: "bullet" }],
-                  [{ script: "sub" }, { script: "super" }],
-                  [{ indent: "-1" }, { indent: "+1" }],
-                  [{ direction: "rtl" }],
-                  [{ size: ["small", false, "large", "huge"] }],
-                  [{ header: [1, 2, 3, 4, 5, 6, false] }],
-                  [{ color: [] }, { background: [] }],
-                  [{ font: [] }],
-                  [{ align: [] }],
-                  ["clean"],
-                  ["link", "image", "video"]
-                ]
-              }
-            }); 
-             
-          };
-          document.body.appendChild(script);
-        });
-      </script>
+    <script is:raw>
+      document.addEventListener("DOMContentLoaded", () => {
+        const script = document.createElement("script");
+        script.src = "https://cdn.quilljs.com/1.3.6/quill.js";
+        script.onload = async () => {
+          const quill = new Quill("#editor-container", {
+            theme: "snow",
+            modules: {
+              toolbar: [
+                ["bold", "italic", "underline", "strike"],
+                ["blockquote", "code-block"],
+                [{ header: 1 }, { header: 2 }],
+                [{ list: "ordered" }, { list: "bullet" }],
+                [{ script: "sub" }, { script: "super" }],
+                [{ indent: "-1" }, { indent: "+1" }],
+                [{ direction: "rtl" }],
+                [{ size: ["small", false, "large", "huge"] }],
+                [{ header: [1, 2, 3, 4, 5, 6, false] }],
+                [{ color: [] }, { background: [] }],
+                [{ font: [] }],
+                [{ align: [] }],
+                ["clean"],
+                ["link", "image", "video"]
+              ]
+            }
+          });
+    
+          const btn = document.getElementById("btnSave");
+          const titleInput = document.getElementById("articleTitle");
+          const categorySelect = document.getElementById("articleCategory");
+          
+
+          btn.addEventListener("click", async () => {
+            const title = titleInput.value.trim();
+            const categoryId = categorySelect.value;
+            const content = quill.root.innerHTML; 
+            const container = document.querySelector(".main-content"); 
+            const articleId = container.dataset.categoryId;    
+
+            if (!title || !categoryId || !content) {
+              alert("All fields are required!");
+              return;
+            }
+
+            try {
+              const res = await fetch(`http://localhost:8080/article/${articleId}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  title,
+                  content,
+                  categoryId,
+                  updatedBy: "admin" // veya giriş yapan kullanıcıdan dinamik alabilirsin
+                })
+              });
+
+              if (!res.ok) throw new Error(await res.text());
+
+              alert("Article updated successfully!");
+              window.location.href = "/cms/article";
+            } catch (err) {
+              alert("Error: " + err.message);
+            }
+          });
+        };
+
+        document.body.appendChild(script);
+      });
+    </script>
   </body>
 </html>

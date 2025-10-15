@@ -1,79 +1,53 @@
 --- 
 import CmsSidebar from '../../../components/CmsSidebar.astro';
 import CmsHeader from '../../../components/CmsHeader.astro';
-import '../../../styles/dashboard.css';   
 
-const res = await fetch("http://localhost:8080/article?size=10&page=0");
-const data = await res.json();
-const articles = data.articleSummaryList || [];
+import '../../../styles/dashboard.css';    
+import '../../../styles/cms-article-edit.css';
 --- 
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <style>
-        .article-title-box {
-  margin: 20px 0;
-  display: flex;
-  flex-direction: column;
-}
-
-.article-title-box label {
-  margin-bottom: 5px;
-  font-weight: 500;
-}
-
-.article-title-box input {
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-size: 16px;
-}
-    </style>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CMS Panel</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
-    />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
-    />
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"rel="stylesheet" />
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" /> 
+    <link rel="stylesheet" href="https://cdn.quilljs.com/1.3.6/quill.snow.css">
   </head>
   <body>
     <div class="container"> 
       <CmsSidebar />
-  <CmsHeader />
+      <CmsHeader />
 
-  <div class="main-content">
+      <div class="main-content">
   
-  <div class="page-title">
-    <div class="title">Article Add</div> 
-</div>
+        <div class="page-title">
+          <div class="title">Article Add</div> 
+        </div>
 
-  <div class="article-title-box">
-    <label for="articleTitle">Title</label>
-    <input type="text" id="articleTitle" placeholder="Enter article title..." />
-  </div>
+        <div class="article-title-box">
+          <label for="articleTitle">Title</label>
+          <input type="text" id="articleTitle" placeholder="Enter article title..." />
+        </div>
 
-    <div class="article-title-box">
-        <label for="articleCategory">Category</label>
-        <select id="articleCategory">
-        <option value="">Loading categories...</option>
-        </select>
-    </div>
+        <div class="article-title-box">
+            <label for="articleCategory">Category</label>
+            <select id="articleCategory">
+            <option value="">Loading categories...</option>
+            </select>
+        </div>
 
-    <div id="editor-container" style="height:400px;"></div>
+        <div id="editor-container" style="height:400px;"></div>
+
         <div class="action-buttons"> 
             <button id="btnSave" class="btn btn-primary">
                 <i class="fas fa-plus"></i>
                 Save
             </button>
         </div> 
-    </div>
-
-<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
- 
-
+      </div>
 
       <script is:raw> 
         document.addEventListener("DOMContentLoaded", () => {
@@ -105,10 +79,7 @@ const articles = data.articleSummaryList || [];
             const btn = document.getElementById("btnSave");
             const titleInput = document.getElementById("articleTitle");
             const categorySelect = document.getElementById("articleCategory");
-
-            // ============================
-            // EKLENDİ: Kategorileri Yükle
-            // ============================
+ 
             try {
               const categoryRes = await fetch("http://localhost:8080/category");
               const categories = await categoryRes.json();
@@ -124,7 +95,6 @@ const articles = data.articleSummaryList || [];
               categorySelect.innerHTML = '<option value="">Error loading categories</option>';
               console.error("Error loading categories:", err);
             }
-            // ============================
 
             btn.addEventListener("click", async () => {
               const title = titleInput.value.trim();
