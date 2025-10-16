@@ -5,13 +5,12 @@ import ArticlePreview from "../components/ArticlePreview.astro";
 const res = await fetch("http://localhost:8080/article?size=10&page=0");
 const data = await res.json();
 const articles = data.articleSummaryList;
-
 ---
 
 <Layout title="Hikmet Cakir Blog">  
-  <div class="grid" style="padding-left:15%; padding-right:15%;">
+  <div class="grid gap-8 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 px-[15%] py-10">
     {
-        articles.map(article => <ArticlePreview article={article} key={article.id} />)
+      articles.map(article => <ArticlePreview article={article} key={article.id} /> )
     }
   </div>
 </Layout>
