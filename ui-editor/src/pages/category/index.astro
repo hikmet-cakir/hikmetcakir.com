@@ -1,7 +1,7 @@
 --- 
-import CmsSidebar from '../../../components/CmsSidebar.astro';
-import CmsHeader from '../../../components/CmsHeader.astro';
-import '../../../styles/dashboard.css';   
+import CmsSidebar from '../../components/Sidebar.astro';
+import CmsHeader from '../../components/Header.astro';
+import '../../styles/dashboard.css';   
 
 const categoriesRes = await fetch("http://localhost:8080/category");
 const categories = await categoriesRes.json();
@@ -56,7 +56,7 @@ const categories = await categoriesRes.json();
                         <div style="display:flex; gap:6px; flex-wrap:nowrap; justify-content:flex-start; align-items:center; max-width:100%; overflow:hidden;">
                         <button class="btn btn-outline btn-sm"
                                 style="width:auto; min-width:75px; padding:4px 6px;"
-                                onclick={`window.location.href='/cms/category/${category.id}'`}>
+                                onclick={`window.location.href='/category/${category.id}'`}>
                         <i class="fas fa-pen"></i> Edit
                         </button>            
                             <button
@@ -106,7 +106,7 @@ const categories = await categoriesRes.json();
 
       const addBtn = document.getElementById("btnAddNew");
       if (addBtn) {
-        addBtn.addEventListener("click", () => { window.location.href = "/cms/category/new"; });
+        addBtn.addEventListener("click", () => { window.location.href = "/category/new"; });
       }
     </script>
   </body>

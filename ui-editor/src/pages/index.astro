@@ -1,16 +1,81 @@
+--- 
+import '../styles/cms-login.css';
+import '../scripts/cms-login.js';
 ---
 
----
+<html>
+    <head>  
+        <meta charset="UTF-8" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+    </head>
+    <body>
+        <div class="overlay"> 
+        <form id="login-form"> 
+        <div class="con"> 
+        <header class="head-form">
+            <h2>Log In</h2>  
+        </header> 
+        <br>
+        <div class="field-set"> 
+                <span class="input-item">
+                <i class="fa fa-envelope"></i>
+                </span> 
+                <input class="form-input" id="txt-input" type="text" placeholder="Email" required> 
+            <br>  
+            <span class="input-item">
+                <i class="fa fa-key"></i>
+            </span> 
+            <input class="form-input" type="password" placeholder="Password" id="pwd"  name="password" required> 
+            <span>
+                <i class="fa fa-eye" aria-hidden="true" type="button" id="eye"></i>
+            </span> 
+            <br> 
+            <button class="log-in"> Log In </button>
+        </div> 
+        <div class="other"> 
+            <button class="btn submits frgt-pass">Forgot Password</button>  
+            <button class="btn submits sign-up">Sign Up  
+            <i class="fa fa-user-plus" aria-hidden="true"></i>
+            </button>
+        </div> 
+        </div> 
+        </form>
+        </div>
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
+
+    <script type="module">   
+      const form = document.getElementById("login-form");
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const email = document.getElementById("txt-input").value;
+        const password = document.getElementById("pwd").value; 
+        try {
+          const response = await fetch("http://localhost:8080/user", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ email, password }),
+          }); 
+          if (!response.ok) {
+            alert("Sunucu hatası: " + response.status);
+            return;
+          }
+
+          const data = await response.json().catch(() => null); 
+          if (data && data.email) {
+            window.location.href = "/dashboard";  
+          } else {
+            alert("Email veya şifre yanlış!");
+          }
+        } catch (error) {
+          console.error("İstek hatası:", error);
+          alert("Bağlantı hatası!");
+        }
+      });
+    </script>
+    </body>
 </html>
+ 

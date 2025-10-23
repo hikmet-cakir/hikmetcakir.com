@@ -1,27 +1,27 @@
 --- 
-import CmsSidebar from '../../../components/CmsSidebar.astro';
-import CmsHeader from '../../../components/CmsHeader.astro';
-import '../../../styles/dashboard.css';
-import '../../../styles/cms-article-edit.css';
+import CmsSidebar from '../../components/Sidebar.astro';
+import CmsHeader from '../../components/Header.astro';
+import '../../styles/dashboard.css';
+import '../../styles/cms-article-edit.css';
 
 
 export const prerender = false;
 
 export async function getStaticPaths() {
   return [];
-}
- 
+} 
 const { id } = Astro.params;
 let article = {};
-let categories = [];
-
+let categories = []; 
 if (id) {
+     
   const res = await fetch(`http://localhost:8080/article?id=${id}&size=10&page=0`);
   const data = await res.json();
   article = data.articleSummaryList[0];
-
+   
   const categoriesRes = await fetch("http://localhost:8080/category");
   categories = await categoriesRes.json();
+  console.log(categories);
 } 
 --- 
 <!DOCTYPE html>
@@ -129,7 +129,7 @@ if (id) {
               if (!res.ok) throw new Error(await res.text());
 
               alert("Article updated successfully!");
-              window.location.href = "/cms/article";
+              window.location.href = "/article";
             } catch (err) {
               alert("Error: " + err.message);
             }

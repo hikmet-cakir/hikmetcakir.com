@@ -1,8 +1,8 @@
 --- 
-import CmsSidebar from '../../../components/CmsSidebar.astro';
-import CmsHeader from '../../../components/CmsHeader.astro';
-import '../../../styles/dashboard.css';    
-import '../../../styles/cms-article-edit.css';
+import CmsSidebar from '../../components/Sidebar.astro';
+import CmsHeader from '../../components/Header.astro';
+import '../../styles/dashboard.css';    
+import '../../styles/cms-article-edit.css';
 
 export const prerender = false;
 
@@ -98,7 +98,7 @@ if (id) {
                         if (!res.ok) throw new Error(await res.text());
         
                         alert("Category updated successfully!"); 
-                        window.location.href = "/cms/category";
+                        window.location.href = "/category";
                     } catch (err) {
                         alert("Error: " + err.message);
                     }

@@ -8,18 +8,18 @@ const currentPath = Astro.url.pathname;
     </div>
     <div class="nav-menu">
         <div class="menu-heading">DASHBOARD</div>
-        <a href="/cms/dashboard" class={`nav-item ${currentPath === '/cms/dashboard' ? 'active' : ''}`} >  
+        <a href="/dashboard" class={`nav-item ${currentPath === '/dashboard' ? 'active' : ''}`} >  
         <i class="fas fa-file-alt"></i> 
         <span>Summary</span> 
         </a> 
 
         <div class="menu-heading">CONTENT</div>
-        <a href="/cms/article" class={`nav-item ${currentPath === '/cms/article' ? 'active' : ''}`} >  
+        <a href="/article" class={`nav-item ${currentPath === '/article' ? 'active' : ''}`} >  
         <i class="fas fa-file-alt"></i> 
         <span>Article</span> 
         </a>
         
-        <a href="/cms/category" class={`nav-item ${currentPath === '/cms/category' ? 'active' : ''}`} >  
+        <a href="/category" class={`nav-item ${currentPath === '/category' ? 'active' : ''}`} >  
         <i class="fas fa-tags"></i> 
         <span>Category</span> 
         </a> 
