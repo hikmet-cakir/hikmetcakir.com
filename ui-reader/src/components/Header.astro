@@ -1,0 +1,73 @@
+---
+import '../styles/search-bar.css';
+
+const res = await fetch('http://localhost:8080/category/hierarchy?levels=1,2');
+const categories = await res.json();
+---
+
+<header class="w-full bg-black">
+  <div class="flex justify-between items-center py-4" style="padding-left:15%; padding-right:15%;"> 
+    <div class="text-white font-bold text-xl"> 
+      <a href="/" class="hover:text-gray-300 hover:bg-gray-700 whitespace-nowrap w-full mr-2 px-2 py-2 rounded-md transition-colors duration-200">
+        Hikmet Cakir
+      </a>
+    </div>
+ 
+    <nav class="flex text-white relative" id="navbar">
+       {
+        categories.map(root => (
+          <div class="relative" key={root.id}>
+            <a href={`/category/${root.id}`} class="hover:text-gray-300 hover:bg-gray-700 whitespace-nowrap w-full mr-2 px-2 py-2 rounded-md transition-colors duration-200">
+              {root.name}
+            </a>
+
+            {
+              root.children && root.children.length > 0 && (
+                <div class="absolute left-0 top-full flex flex-col bg-black mt-2 rounded-md shadow-lg min-w-[180px] z-50 hidden">
+                  {
+                    root.children.map(child => (
+                      <a key={child.id} href={`/category/${child.id}`} class="block px-4 py-2 hover:bg-gray-700 hover:text-white transition-colors duration-150"> 
+                        {child.name}
+                      </a>
+                    ))
+                  }
+                </div>
+              )
+            }
+          </div>
+        ))
+       }
+
+      <div class="container">
+          <input type="text" name="text" class="input" required="" placeholder="Type to search...">
+          <div class="icon">
+              <svg xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512">
+                  <title>Search</title>
+                  <path d="M221.09 64a157.09 157.09 0 10157.09 157.09A157.1 157.1 0 00221.09 64z" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"></path>
+                  <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M338.29 338.29L448 448"></path>
+              </svg>
+          </div>
+      </div>
+    </nav> 
+  </div> 
+</header>
+
+<script type="module">
+const navbar = document.getElementById('navbar');
+
+navbar.querySelectorAll(':scope > div.relative').forEach(parentDiv => {
+  const dropdown = parentDiv.querySelector('div.absolute');
+  if (!dropdown) return;
+
+  let timeout;
+
+  parentDiv.addEventListener('mouseenter', () => {
+    clearTimeout(timeout);
+    dropdown.classList.remove('hidden');
+  });
+
+  parentDiv.addEventListener('mouseleave', () => {
+    timeout = setTimeout(() => { dropdown.classList.add('hidden'); }, 100);
+  });
+});
+</script>

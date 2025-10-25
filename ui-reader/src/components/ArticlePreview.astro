@@ -1,0 +1,32 @@
+---
+const { article } = Astro.props;
+
+
+function truncate(text, maxLength = 180) {
+  if (!text) return "";
+  return text.length > maxLength ? text.substring(0, maxLength) + "..." : text;
+}
+ 
+const thumbnail = article.thumbnail || `https://picsum.photos/seed/${article.id}/600/400`;
+---
+<article class="bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden w-full h-full flex flex-col">
+ 
+  <div class="w-full h-56 overflow-hidden">
+    <img src={thumbnail} alt={article.title} class="w-full h-full object-cover hover:scale-105 transition-transform duration-500" loading="lazy"/>
+  </div>
+
+  <div class="p-6 flex flex-col flex-1">
+    <div>
+      <h2 class="text-2xl font-semibold mb-3 text-gray-900 line-clamp-2">{article.title}</h2>
+      <p class="text-gray-700 leading-relaxed mb-6">
+        {truncate(article.content)}
+      </p>
+    </div>
+ 
+    <div class="mt-auto flex justify-end">
+      <a href={`/article/${article.id}`}   class="px-5 py-2 border border-black text-black rounded-full hover:bg-black hover:text-white transition-colors duration-300">
+        Read More
+      </a>
+    </div>
+  </div>
+</article>

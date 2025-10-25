@@ -1,0 +1,8 @@
+body {
+  background-color: #f6f7f9;
+  background-image:
+    radial-gradient(rgba(148, 163, 184, 0.15) 1px, transparent 1px),
+    linear-gradient(180deg, #f6f7f9 0%, #eef1f5 100%);
+  background-size: 22px 22px, 100% 100%;
+  background-attachment: fixed;
+}
