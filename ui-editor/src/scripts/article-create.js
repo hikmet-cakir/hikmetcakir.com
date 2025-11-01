@@ -1,0 +1,94 @@
+  document.addEventListener("DOMContentLoaded", () => {
+          const script = document.createElement("script");
+          script.src = "https://cdn.quilljs.com/1.3.6/quill.js";
+          script.onload = async () => {
+            const imgUploaderScript = document.createElement("script");
+            imgUploaderScript.src = "https://unpkg.com/quill-image-uploader@1.3.0/dist/quill.imageUploader.min.js";
+            imgUploaderScript.onload = () => {
+              Quill.register("modules/imageUploader", ImageUploader);
+ 
+              var quill = new Quill("#editor-container", {
+                theme: "snow",
+                modules: {
+                  toolbar: [
+                    ["bold", "italic", "underline", "strike"],
+                    ["blockquote", "code-block"],
+                    [{ header: 1 }, { header: 2 }],
+                    [{ list: "ordered" }, { list: "bullet" }],
+                    [{ script: "sub" }, { script: "super" }],
+                    [{ indent: "-1" }, { indent: "+1" }],
+                    [{ direction: "rtl" }],
+                    [{ size: ["small", false, "large", "huge"] }],
+                    [{ header: [1, 2, 3, 4, 5, 6, false] }],
+                    [{ color: [] }, { background: [] }],
+                    [{ font: [] }],
+                    [{ align: [] }],
+                    ["clean"],
+                    ["link", "image", "video"]
+                  ],
+                  imageUploader: {
+                    upload: file => {
+                      return new Promise((resolve, reject) => {
+                        const reader = new FileReader();
+                        reader.onload = () => resolve(reader.result); // base64
+                        reader.onerror = reject;
+                        reader.readAsDataURL(file);
+                      });
+                    }
+                  }
+                }
+              }); 
+             
+              const btn = document.getElementById("btnSave");
+              const titleInput = document.getElementById("articleTitle");
+              const categorySelect = document.getElementById("articleCategory");
+
+              (async () => {
+                try {
+                  const categoryRes = await fetch("http://localhost:8080/category");
+                  const categories = await categoryRes.json();
+                  categorySelect.innerHTML = '<option value="">Select category...</option>';
+                  categories.forEach(cat => {
+                    const option = document.createElement("option");
+                    option.value = cat.id;
+                    option.textContent = cat.name;
+                    categorySelect.appendChild(option);
+                  });
+                } catch (err) {
+                  categorySelect.innerHTML = '<option value="">Error loading categories</option>';
+                  console.error("Error loading categories:", err);
+                }
+              })();
+
+              btn.addEventListener("click", async () => {
+                const title = titleInput.value.trim();
+                const content = quill.root.innerHTML.trim();
+                const categoryId = categorySelect.value;
+                const createdBy = '49001';
+
+                if (!title || !content || !categoryId) {
+                  alert("Title, category and content cannot be empty!");
+                  return;
+                }
+
+                try {
+                  const res = await fetch("http://localhost:8080/article", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ title, content, categoryId, createdBy })
+                  });
+
+                  if (!res.ok) throw new Error(await res.text());
+                  alert("Article added successfully!");
+                  titleInput.value = "";
+                  quill.setText("");
+                  categorySelect.selectedIndex = 0;
+                } catch (err) {
+                  alert("Error: " + err.message);
+                }
+              });
+            };
+            document.body.appendChild(imgUploaderScript);
+          };
+          document.body.appendChild(script);
+        });
