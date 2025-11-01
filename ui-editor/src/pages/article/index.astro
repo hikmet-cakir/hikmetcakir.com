@@ -1,6 +1,6 @@
 --- 
-import CmsSidebar from '../../components/Sidebar.astro';
-import CmsHeader from '../../components/Header.astro';
+import Sidebar from '../../components/Sidebar.astro';
+import Header from '../../components/Header.astro';
 import '../../styles/dashboard.css';   
 
 const res = await fetch("http://localhost:8080/article?size=10&page=0");
@@ -19,9 +19,8 @@ const articles = data.articleSummaryList || [];
   </head>
   <body>
     <div class="container"> 
-      <CmsSidebar />
-
-      <CmsHeader />
+      <Sidebar />
+      <Header />
 
       <div class="main-content">
         <div class="page-title">
