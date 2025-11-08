@@ -1,8 +1,5 @@
 --- 
-import Sidebar from '../../components/Sidebar.astro';
-import Header from '../../components/Header.astro';
-
-import '../../styles/dashboard.css';     
+import BaseLayout from '../../layouts/BaseLayout.astro';  
 
 export const prerender = false;
 
@@ -21,89 +18,74 @@ if (id) {
   categoryData = categories.find(cat => String(cat.id) === String(id));
 }  
 --- 
-<!DOCTYPE html>
-<html lang="en">
-  <head> 
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>CMS Category Edit</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"/> 
-  </head>
-  <body>
-    <div class="container"> 
-        <Sidebar />
-        <Header />
+<BaseLayout> 
+    <div class="main-content" data-category-id={id}>
 
-        <div class="main-content" data-category-id={id}>
-  
-        <div class="page-title">
-            <div class="title">Category Edit</div> 
-        </div>
+    <div class="page-title">
+        <div class="title">Category Edit</div> 
+    </div>
 
-        <div class="article-title-box">
-            <label for="articleTitle">Name</label>
-            <input 
-                type="text" 
-                id="articleTitle" 
-                placeholder="Enter category name..." 
-                value={categoryData ? categoryData.name : ""} 
-            />
-        </div>
- 
-        <div class="article-title-box">
-            <label for="articleCategory">Parent Category</label>
-            <select id="articleCategory">
-                <option value="">Select category...</option>
-                {
-                categories.map(cat => (
-                    <option value={cat.id} selected={categoryData && categoryData.parentId === cat.id}>
-                        {cat.name}
-                    </option>
-                ))
+    <div class="article-title-box">
+        <label for="articleTitle">Name</label>
+        <input 
+            type="text" 
+            id="articleTitle" 
+            placeholder="Enter category name..." 
+            value={categoryData ? categoryData.name : ""} 
+        />
+    </div>
+
+    <div class="article-title-box">
+        <label for="articleCategory">Parent Category</label>
+        <select id="articleCategory">
+            <option value="">Select category...</option>
+            {
+            categories.map(cat => (
+                <option value={cat.id} selected={categoryData && categoryData.parentId === cat.id}>
+                    {cat.name}
+                </option>
+            ))
+            }
+        </select>
+    </div>
+
+    <div class="action-buttons"> 
+        <button id="btnSave" class="btn btn-primary">
+            <i class="fas fa-plus"></i>
+            Edit
+        </button>
+    </div> 
+
+    <script is:raw> 
+        document.addEventListener("DOMContentLoaded", () => {   
+            const btn = document.getElementById("btnSave");
+            const titleInput = document.getElementById("articleTitle"); 
+            const parentCategory = document.getElementById("articleCategory");  
+            btn.addEventListener("click", async () => {
+                const name = titleInput.value.trim();   
+                const parentId = parentCategory.value || null;  
+                const container = document.querySelector(".main-content"); 
+                const categoryId = container.dataset.categoryId;   
+                if (!name) {
+                    alert("Name cannot be empty!");
+                    return;
                 }
-            </select>
-        </div>
 
-        <div class="action-buttons"> 
-            <button id="btnSave" class="btn btn-primary">
-                <i class="fas fa-plus"></i>
-                Edit
-            </button>
-        </div> 
-    
-        <script is:raw> 
-            document.addEventListener("DOMContentLoaded", () => {   
-                const btn = document.getElementById("btnSave");
-                const titleInput = document.getElementById("articleTitle"); 
-                const parentCategory = document.getElementById("articleCategory");  
-                btn.addEventListener("click", async () => {
-                    const name = titleInput.value.trim();   
-                    const parentId = parentCategory.value || null;  
-                    const container = document.querySelector(".main-content"); 
-                    const categoryId = container.dataset.categoryId;   
-                    if (!name) {
-                        alert("Name cannot be empty!");
-                        return;
-                    }
-        
-                    try {
-                        const res = await fetch(`http://localhost:8080/category/${categoryId}`, {
-                            method: "PUT",
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify({ name, parentId })
-                        });
+                try {
+                    const res = await fetch(`http://localhost:8080/category/${categoryId}`, {
+                        method: "PUT",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ name, parentId })
+                    });
 
-                        if (!res.ok) throw new Error(await res.text());
-        
-                        alert("Category updated successfully!"); 
-                        window.location.href = "/category";
-                    } catch (err) {
-                        alert("Error: " + err.message);
-                    }
-                }); 
-            });
-        </script>
-  </body>
-</html>
+                    if (!res.ok) throw new Error(await res.text());
+
+                    alert("Category updated successfully!"); 
+                    window.location.href = "/category";
+                } catch (err) {
+                    alert("Error: " + err.message);
+                }
+            }); 
+        });
+    </script>
+</BaseLayout>
