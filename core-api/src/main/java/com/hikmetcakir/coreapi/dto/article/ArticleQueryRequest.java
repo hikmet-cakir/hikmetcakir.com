@@ -19,4 +19,12 @@ public class ArticleQueryRequest {
     private int size;
     @Min(0)
     private int page;
+
+    public String toCacheKey() {
+        return "id=" + (id == null ? "" : id) +
+               ":title=" + (title == null ? "" : title) +
+               ":category=" + (categoryId == null ? "" : categoryId) +
+               ":page=" + page +
+               ":size=" + size;
+    }
 }
