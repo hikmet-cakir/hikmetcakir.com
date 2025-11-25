@@ -52,11 +52,12 @@ import '../scripts/cms-login.js';
         const email = document.getElementById("txt-input").value;
         const password = document.getElementById("pwd").value; 
         try {
-          const response = await fetch("http://localhost:8080/user", {
+          const response = await fetch("http://localhost:8080/auth/login", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
             },
+            credentials: "include",
             body: JSON.stringify({ email, password }),
           }); 
           if (!response.ok) {
@@ -65,7 +66,7 @@ import '../scripts/cms-login.js';
           }
 
           const data = await response.json().catch(() => null); 
-          if (data && data.email) {
+          if (data && data.status === "ok") {
             window.location.href = "/dashboard";  
           } else {
             alert("Email veya şifre yanlış!");
