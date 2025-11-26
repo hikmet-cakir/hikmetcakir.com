@@ -61,4 +61,25 @@ public class JwtUtil {
     public String getUserId(String token) {
         return parseToken(token).getBody().getSubject();
     }
+
+    public boolean validate(String token) {
+        try {
+            Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(token);
+            return true;
+        } catch (ExpiredJwtException e) {
+            System.out.println("Token expired");
+        } catch (UnsupportedJwtException e) {
+            System.out.println("Unsupported token");
+        } catch (MalformedJwtException e) {
+            System.out.println("Malformed token");
+        } catch (SignatureException e) {
+            System.out.println("Invalid signature");
+        } catch (IllegalArgumentException e) {
+            System.out.println("Token empty or null");
+        }
+        return false;
+    }
 }

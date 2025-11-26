@@ -33,28 +33,34 @@ public class AuthController {
         String access = jwtUtil.generateAccessToken(user.getId(), user.getRole());
         String refresh = jwtUtil.generateRefreshToken(user.getId());
 
-        // Access cookie (short-lived)
         ResponseCookie accessCookie = ResponseCookie.from("access_token", access)
                 .httpOnly(true)
-                .secure(true)
+                .secure(false)
                 .path("/")
-                .maxAge(15 * 60) // 15 minutes in seconds
-                .sameSite("None") // cross-site (Astro frontend different origin)
+                .maxAge(15 * 60)       // 15 dakika
+                .sameSite("Lax")
                 .build();
 
-        // Refresh cookie (longer)
         ResponseCookie refreshCookie = ResponseCookie.from("refresh_token", refresh)
                 .httpOnly(true)
-                .secure(true)
+                .secure(false)
                 .path("/auth/refresh")
-                .maxAge(7 * 24 * 3600) // 7 days
-                .sameSite("None")
+                .maxAge(7 * 24 * 3600) // 7 gün
+                .sameSite("Lax")
                 .build();
 
         response.addHeader("Set-Cookie", accessCookie.toString());
         response.addHeader("Set-Cookie", refreshCookie.toString());
 
         return ResponseEntity.ok().body(Map.of("status", "ok"));
+    }
+
+    @GetMapping("/verify")
+    public ResponseEntity<?> verifyToken(@CookieValue(name = "access_token", required = false) String token) {
+        if (token == null || !jwtUtil.validate(token)) {
+            return ResponseEntity.status(401).body(Map.of("status", "invalid"));
+        }
+        return ResponseEntity.ok(Map.of("status", "ok"));
     }
 
     @PostMapping("/refresh")
