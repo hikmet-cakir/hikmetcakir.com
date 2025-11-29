@@ -1,8 +1,7 @@
 import { defineConfig } from 'astro/config';
  
 export default defineConfig({ 
-  output: 'server',
-  adapter: node(),
+  output: 'server', 
   middleware: true,
   server: {
     port: 4001
