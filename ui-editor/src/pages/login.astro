@@ -67,6 +67,7 @@ import '../scripts/cms-login.js';
 
           const data = await response.json().catch(() => null); 
           if (data && data.status === "ok") {
+            document.cookie = `access_token=${data.access_token}; path=/; secure; samesite=lax`;
             window.location.href = "/dashboard";  
           } else {
             alert("Email veya şifre yanlış!");
