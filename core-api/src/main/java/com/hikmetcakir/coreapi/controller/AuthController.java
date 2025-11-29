@@ -76,7 +76,7 @@ public class AuthController {
 
         ResponseCookie accessCookie = ResponseCookie.from("access_token", newAccess)
                 .httpOnly(true)
-                .secure(true)
+                .secure(false)
                 .path("/")
                 .maxAge(15 * 60)
                 .sameSite("None")
@@ -90,14 +90,14 @@ public class AuthController {
     public ResponseEntity<?> logout(HttpServletResponse response) {
         ResponseCookie clearAccess = ResponseCookie.from("access_token", "")
                 .httpOnly(true)
-                .secure(true)
+                .secure(false)
                 .path("/")
                 .maxAge(0)
                 .sameSite("None")
                 .build();
         ResponseCookie clearRefresh = ResponseCookie.from("refresh_token", "")
                 .httpOnly(true)
-                .secure(true)
+                .secure(false)
                 .path("/auth/refresh")
                 .maxAge(0)
                 .sameSite("None")
