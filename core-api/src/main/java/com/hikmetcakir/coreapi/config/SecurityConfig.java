@@ -32,8 +32,11 @@ public class SecurityConfig {
         this.userRepository = userRepository;
     }
 
-    @Value("${frontend.origin}")
-    private String frontendOrigin;
+    @Value("${frontend.reader.origin}")
+    private String frontendReaderOrigin;
+
+    @Value("${frontend.editor.origin}")
+    private String frontendEditorOrigin;
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -48,7 +51,7 @@ public class SecurityConfig {
             .cors(Customizer.withDefaults())
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                    .requestMatchers(HttpMethod.GET, "/article/**").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/article*", "/article/**").permitAll()
                     .requestMatchers(HttpMethod.GET, "/category/**").permitAll()
                     .requestMatchers("/auth/**").permitAll()
                     .requestMatchers(HttpMethod.POST, "/article/**").authenticated()
@@ -67,7 +70,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of(frontendOrigin));  // örn: http://localhost:4001
+        config.setAllowedOrigins(List.of(frontendReaderOrigin, frontendEditorOrigin));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
