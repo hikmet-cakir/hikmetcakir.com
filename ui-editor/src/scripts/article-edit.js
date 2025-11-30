@@ -45,6 +45,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const res = await fetch(`http://localhost:8080/article/${articleId}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
+            credentials: "include",
             body: JSON.stringify({
                 title,
                 content,
