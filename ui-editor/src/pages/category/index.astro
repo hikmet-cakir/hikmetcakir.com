@@ -72,6 +72,7 @@ const categories = await categoriesRes.json();
             try {
               const res = await fetch(`http://localhost:8080/category/${id}`, {
                 method: "DELETE",
+                credentials: "include"
               });
 
               if (res.ok) {

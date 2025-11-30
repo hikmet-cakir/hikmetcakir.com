@@ -54,6 +54,7 @@ const categories = await categoriesRes.json();
                     const res = await fetch("http://localhost:8080/category", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
+                        credentials: "include",
                         body: JSON.stringify({ name, parentId })
                     });
 

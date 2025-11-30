@@ -75,6 +75,7 @@ if (id) {
                     const res = await fetch(`http://localhost:8080/category/${categoryId}`, {
                         method: "PUT",
                         headers: { "Content-Type": "application/json" },
+                        credentials: "include",
                         body: JSON.stringify({ name, parentId })
                     });
 
