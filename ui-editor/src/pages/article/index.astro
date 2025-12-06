@@ -1,9 +1,13 @@
 --- 
 import BaseLayout from '../../layouts/BaseLayout.astro';  
-  
-const res = await fetch("http://localhost:8080/article?size=10&page=0");
+
+const pageSize = 10;
+const currentPage = Number(Astro.url.searchParams.get('page') || '0');
+const res = await fetch(`http://localhost:8080/article?size=${pageSize}&page=${currentPage}`);
 const data = await res.json();
 const articles = data.articleSummaryList || [];
+const hasNextPage = articles.length === pageSize;
+const hasPreviousPage = currentPage > 0;
 ---  
  <BaseLayout> 
 
@@ -34,7 +38,7 @@ const articles = data.articleSummaryList || [];
                     <td colspan="6" style="text-align:center;">No articles found.</td>
                   </tr>
                 ) : (
-                  articles.map(article => (
+                  articles.map((article: any) => (
                     <tr>
                       <td>{article.id}</td>
                       <td>{article.title}</td>
@@ -62,6 +66,32 @@ const articles = data.articleSummaryList || [];
             </tbody>
           </table>
         </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px; padding: 0 10px;">
+          <div>
+            <button 
+              id="btnPrevious" 
+              class="btn btn-outline"
+              disabled={!hasPreviousPage}
+              style={hasPreviousPage ? "" : "opacity: 0.5; cursor: not-allowed;"}
+            >
+              <i class="fas fa-chevron-left"></i> Previous
+            </button>
+          </div>
+          <div style="font-size: 14px; color: #666;">
+            Page {currentPage + 1}
+          </div>
+          <div>
+            <button 
+              id="btnNext" 
+              class="btn btn-outline"
+              disabled={!hasNextPage}
+              style={hasNextPage ? "" : "opacity: 0.5; cursor: not-allowed;"}
+            >
+              Next <i class="fas fa-chevron-right"></i>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -70,7 +100,7 @@ const articles = data.articleSummaryList || [];
         const editButtons = document.querySelectorAll(".btn-edit");
         editButtons.forEach(btn => {
           btn.addEventListener("click", () => {
-            const id = btn.dataset.id;
+            const id = (btn as HTMLButtonElement).dataset.id;
             window.location.href = `/article/${id}`;
           });
         });
@@ -78,7 +108,7 @@ const articles = data.articleSummaryList || [];
         const deleteButtons = document.querySelectorAll(".btn-delete");
         deleteButtons.forEach(btn => {
           btn.addEventListener("click", async () => {
-            const id = btn.dataset.id;
+            const id = (btn as HTMLButtonElement).dataset.id;
             if (!confirm("Are you sure you want to delete this article?")) return;
 
             try {
@@ -95,7 +125,7 @@ const articles = data.articleSummaryList || [];
                 alert("Failed to delete article: " + msg);
               }
             } catch (err) {
-              alert("Error: " + err.message);
+              alert("Error: " + (err as Error).message);
             }
           });
         });
@@ -105,6 +135,24 @@ const articles = data.articleSummaryList || [];
       if (addBtn) {
         addBtn.addEventListener("click", () => {
           window.location.href = "/article/new";
+        });
+      }
+
+      const prevBtn = document.getElementById("btnPrevious") as HTMLButtonElement | null;
+      if (prevBtn && !prevBtn.disabled) {
+        prevBtn.addEventListener("click", () => {
+          const currentPage = new URLSearchParams(window.location.search).get('page') || '0';
+          const newPage = Math.max(0, parseInt(currentPage) - 1);
+          window.location.href = `/article${newPage > 0 ? `?page=${newPage}` : ''}`;
+        });
+      }
+
+      const nextBtn = document.getElementById("btnNext") as HTMLButtonElement | null;
+      if (nextBtn && !nextBtn.disabled) {
+        nextBtn.addEventListener("click", () => {
+          const currentPage = new URLSearchParams(window.location.search).get('page') || '0';
+          const newPage = parseInt(currentPage) + 1;
+          window.location.href = `/article?page=${newPage}`;
         });
       }
     </script>
