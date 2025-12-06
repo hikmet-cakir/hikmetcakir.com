@@ -3,7 +3,7 @@ package com.hikmetcakir.coreapi.service;
 import com.hikmetcakir.coreapi.dto.user.UserQueryRequest;
 import com.hikmetcakir.coreapi.dto.user.UserQueryResponse;
 import com.hikmetcakir.coreapi.entity.UserEntity;
-import com.hikmetcakir.coreapi.respository.UserRepository;
+import com.hikmetcakir.coreapi.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

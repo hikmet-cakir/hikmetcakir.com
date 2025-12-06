@@ -6,7 +6,7 @@ import com.hikmetcakir.coreapi.dto.category.CategorySaveRequest;
 import com.hikmetcakir.coreapi.dto.category.CategoryUpdateRequest;
 import com.hikmetcakir.coreapi.entity.CategoryEntity;
 import com.hikmetcakir.coreapi.mapper.CategoryMapper;
-import com.hikmetcakir.coreapi.respository.CategoryRepository;
+import com.hikmetcakir.coreapi.repository.CategoryRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

@@ -1,7 +1,7 @@
 package com.hikmetcakir.coreapi.controller;
 
 import com.hikmetcakir.coreapi.auth.JwtUtil;
-import com.hikmetcakir.coreapi.respository.UserRepository;
+import com.hikmetcakir.coreapi.repository.UserRepository;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseCookie;

@@ -3,7 +3,7 @@ package com.hikmetcakir.coreapi.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hikmetcakir.coreapi.dto.category.*;
 import com.hikmetcakir.coreapi.entity.CategoryEntity;
-import com.hikmetcakir.coreapi.respository.CategoryRepository;
+import com.hikmetcakir.coreapi.repository.CategoryRepository;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;

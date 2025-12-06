@@ -5,7 +5,7 @@ import com.hikmetcakir.coreapi.dto.article.ArticleSaveRequest;
 import com.hikmetcakir.coreapi.dto.article.ArticleSummary;
 import com.hikmetcakir.coreapi.dto.article.ArticleUpdateRequest;
 import com.hikmetcakir.coreapi.entity.ArticleEntity;
-import com.hikmetcakir.coreapi.respository.ArticleRepository;
+import com.hikmetcakir.coreapi.repository.ArticleRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

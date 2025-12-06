@@ -1,6 +1,6 @@
 package com.hikmetcakir.coreapi.auth;
 
-import com.hikmetcakir.coreapi.respository.UserRepository;
+import com.hikmetcakir.coreapi.repository.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;

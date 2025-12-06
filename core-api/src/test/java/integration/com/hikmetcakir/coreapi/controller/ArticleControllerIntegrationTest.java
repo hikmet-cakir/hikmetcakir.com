@@ -3,7 +3,7 @@ package com.hikmetcakir.coreapi.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hikmetcakir.coreapi.dto.article.*;
 import com.hikmetcakir.coreapi.entity.ArticleEntity;
-import com.hikmetcakir.coreapi.respository.ArticleRepository;
+import com.hikmetcakir.coreapi.repository.ArticleRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

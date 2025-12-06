@@ -3,7 +3,7 @@ package com.hikmetcakir.coreapi.service;
 import com.hikmetcakir.coreapi.dto.user.UserQueryRequest;
 import com.hikmetcakir.coreapi.dto.user.UserQueryResponse;
 import com.hikmetcakir.coreapi.mapper.UserMapper;
-import com.hikmetcakir.coreapi.respository.UserRepository;
+import com.hikmetcakir.coreapi.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 @Service

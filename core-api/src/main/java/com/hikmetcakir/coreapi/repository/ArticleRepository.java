@@ -1,4 +1,4 @@
-package com.hikmetcakir.coreapi.respository;
+package com.hikmetcakir.coreapi.repository;
 
 import com.hikmetcakir.coreapi.entity.ArticleEntity;
 import org.springframework.data.mongodb.repository.MongoRepository;

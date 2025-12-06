@@ -2,7 +2,7 @@ package com.hikmetcakir.coreapi.config;
 
 import com.hikmetcakir.coreapi.auth.JwtFilter;
 import com.hikmetcakir.coreapi.auth.JwtUtil;
-import com.hikmetcakir.coreapi.respository.UserRepository;
+import com.hikmetcakir.coreapi.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,7 +15,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
 
 import java.util.List;
 
