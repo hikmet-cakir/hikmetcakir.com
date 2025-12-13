@@ -81,10 +81,17 @@ public class ArticleService {
                 .created(LocalDateTime.now())
                 .deleted(false)
                 .build();
-        return Optional.of(articleEntity)
+        String articleId = Optional.of(articleEntity)
                 .map(articleRepository::save)
                 .map(ArticleEntity::getId)
                 .orElseThrow();
+        log.info("Article saved successfully. articleId={}, title={}, categoryId={}, createdBy={}",
+                articleId,
+                request.getTitle(),
+                request.getCategoryId(),
+                request.getCreatedBy()
+        );
+        return articleId;
     }
 
     @CacheEvict(value = "articleQueryCache", allEntries = true)
