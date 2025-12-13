@@ -98,10 +98,23 @@ public class ArticleService {
     public void update(String id, ArticleUpdateRequest request) {
         ArticleEntity articleEntity = articleRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Article with given id does not exist and cannot be updated"));
+        log.info("Article update started. articleId={}, oldTitle={}, oldCategoryId={}, updatedBy={}",
+                id,
+                articleEntity.getTitle(),
+                articleEntity.getCategoryId(),
+                request.getUpdatedBy()
+        );
 
         ArticleMapper.INSTANCE.updateEntity(request, articleEntity);
 
         articleRepository.save(articleEntity);
+
+        log.info("Article updated successfully. articleId={}, newTitle={}, newCategoryId={}, updatedBy={}",
+                id,
+                articleEntity.getTitle(),
+                articleEntity.getCategoryId(),
+                request.getUpdatedBy()
+        );
     }
 
     @CacheEvict(value = "articleQueryCache", allEntries = true)
