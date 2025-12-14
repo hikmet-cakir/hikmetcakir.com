@@ -7,6 +7,7 @@ import com.hikmetcakir.coreapi.dto.category.CategoryUpdateRequest;
 import com.hikmetcakir.coreapi.entity.CategoryEntity;
 import com.hikmetcakir.coreapi.mapper.CategoryMapper;
 import com.hikmetcakir.coreapi.repository.CategoryRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class CategoryService {
 
     private final CategoryRepository categoryRepository;
@@ -38,10 +40,16 @@ public class CategoryService {
                 .parentId(request.getParentId())
                 .deleted(false)
                 .build();
-        return Optional.of(categoryEntity)
+        String categoryId = Optional.of(categoryEntity)
                 .map(categoryRepository::save)
                 .map(CategoryEntity::getId)
                 .orElseThrow();
+        log.info("Category saved successfully. categoryId={}, name={}, parentId={}",
+                categoryId,
+                request.getName(),
+                request.getParentId()
+        );
+        return categoryId;
     }
 
     public List<CategoryHierarchy> queryCategoryHierarchy(List<Integer> levels) {
