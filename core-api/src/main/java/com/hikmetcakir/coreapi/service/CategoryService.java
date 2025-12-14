@@ -97,6 +97,7 @@ public class CategoryService {
         categoryEntityList.forEach(categoryEntity -> categoryEntity.setDeleted(true));
 
         categoryRepository.saveAll(categoryEntityList);
+        log.info("Category and its dependent categories deleted successfully. categoryId={}", id);
     }
 
     public void update(String id, CategoryUpdateRequest request) {
