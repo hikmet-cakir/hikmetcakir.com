@@ -125,5 +125,6 @@ public class ArticleService {
         articleEntity.setDeleted(true);
 
         articleRepository.save(articleEntity);
+        log.info("Article deleted successfully. articleId={}", id);
     }
 }
