@@ -14,6 +14,5 @@ import java.time.LocalDateTime;
 public class ArticleViewEvent {
 
     private String articleId;
-    private String userId;
     private LocalDateTime timestamp;
 }

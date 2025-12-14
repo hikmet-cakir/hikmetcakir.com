@@ -46,8 +46,9 @@ public class ArticleService {
 
         if (request.getId() != null) {
             criteriaList.add(Criteria.where("id").is(request.getId()));
-            viewKafkaTemplate.send("article-view", new ArticleViewEvent(request.getId(), "49001", LocalDateTime.now()));
+            viewKafkaTemplate.send("article-view", new ArticleViewEvent(request.getId(), LocalDateTime.now()));
         }
+
         if (request.getTitle() != null && !request.getTitle().isBlank()) {
             criteriaList.add(Criteria.where("title").regex(request.getTitle(), "i"));
         }

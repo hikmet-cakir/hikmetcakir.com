@@ -19,7 +19,6 @@ public class ArticleViewEntity {
     @Id
     private String id;
     private String articleId;
-    private String userId;
     private LocalDateTime timestamp;
 }
 

@@ -15,7 +15,6 @@ public class ArticleViewService {
     public void saveViewEvent(ArticleViewEvent event) {
         ArticleViewEntity view = ArticleViewEntity.builder()
                 .articleId(event.getArticleId())
-                .userId(event.getUserId())
                 .timestamp(event.getTimestamp())
                 .build();
 
