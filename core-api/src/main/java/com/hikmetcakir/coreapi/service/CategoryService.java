@@ -103,9 +103,10 @@ public class CategoryService {
     public void update(String id, CategoryUpdateRequest request) {
         CategoryEntity categoryEntity = categoryRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Category with given id does not exist and cannot be updated"));
-
+        log.info("Category update started. categoryId={}, oldName={}, oldParentId={}", id, categoryEntity.getName(), categoryEntity.getParentId());
         CategoryMapper.INSTANCE.updateEntity(request, categoryEntity);
 
         categoryRepository.save(categoryEntity);
+        log.info("Category updated successfully. categoryId={}, newName={}, newParentId={}", id, categoryEntity.getName(), categoryEntity.getParentId());
     }
 }
