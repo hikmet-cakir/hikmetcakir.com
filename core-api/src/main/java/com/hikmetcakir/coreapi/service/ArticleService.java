@@ -5,6 +5,7 @@ import com.hikmetcakir.coreapi.dto.article.ArticleSaveRequest;
 import com.hikmetcakir.coreapi.dto.article.ArticleSummary;
 import com.hikmetcakir.coreapi.dto.article.ArticleUpdateRequest;
 import com.hikmetcakir.coreapi.dto.event.ArticleViewEvent;
+import com.hikmetcakir.coreapi.dto.event.CategoryViewEvent;
 import com.hikmetcakir.coreapi.entity.ArticleEntity;
 import com.hikmetcakir.coreapi.mapper.ArticleMapper;
 import com.hikmetcakir.coreapi.repository.ArticleRepository;
@@ -35,7 +36,9 @@ public class ArticleService {
 
     private MongoTemplate mongoTemplate;
 
-    private final KafkaTemplate<String, ArticleViewEvent> viewKafkaTemplate;
+    private final KafkaTemplate<String, ArticleViewEvent> articleViewKafkaTemplate;
+
+    private final KafkaTemplate<String, CategoryViewEvent> categoryViewKafkaTemplate;
 
     @Cacheable(value = "articleQueryCache", key = "#request.toCacheKey()")
     public List<ArticleSummary> query(ArticleQueryRequest request) {
@@ -46,7 +49,7 @@ public class ArticleService {
 
         if (request.getId() != null) {
             criteriaList.add(Criteria.where("id").is(request.getId()));
-            viewKafkaTemplate.send("article-view", new ArticleViewEvent(request.getId(), LocalDateTime.now()));
+            articleViewKafkaTemplate.send("article-view", new ArticleViewEvent(request.getId(), LocalDateTime.now()));
         }
 
         if (request.getTitle() != null && !request.getTitle().isBlank()) {
@@ -58,6 +61,7 @@ public class ArticleService {
             categoryIds.add(request.getCategoryId());
             categoryIds.addAll(categoryService.getAllChildCategoryIds(request.getCategoryId()));
             criteriaList.add(Criteria.where("categoryId").in(categoryIds));
+            categoryViewKafkaTemplate.send("category-view", new CategoryViewEvent(request.getCategoryId(), LocalDateTime.now()));
         }
 
         if (!criteriaList.isEmpty()) {
