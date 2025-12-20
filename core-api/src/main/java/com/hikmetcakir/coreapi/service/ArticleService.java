@@ -36,9 +36,7 @@ public class ArticleService {
 
     private MongoTemplate mongoTemplate;
 
-    private final KafkaTemplate<String, ArticleViewEvent> articleViewKafkaTemplate;
-
-    private final KafkaTemplate<String, CategoryViewEvent> categoryViewKafkaTemplate;
+    private final KafkaTemplate<String, Object> kafkaTemplate;
 
     @Cacheable(value = "articleQueryCache", key = "#request.toCacheKey()")
     public List<ArticleSummary> query(ArticleQueryRequest request) {
@@ -49,7 +47,7 @@ public class ArticleService {
 
         if (request.getId() != null) {
             criteriaList.add(Criteria.where("id").is(request.getId()));
-            articleViewKafkaTemplate.send("article-view", new ArticleViewEvent(request.getId(), LocalDateTime.now()));
+            kafkaTemplate.send("article-view", new ArticleViewEvent(request.getId(), LocalDateTime.now()));
         }
 
         if (request.getTitle() != null && !request.getTitle().isBlank()) {
@@ -61,7 +59,7 @@ public class ArticleService {
             categoryIds.add(request.getCategoryId());
             categoryIds.addAll(categoryService.getAllChildCategoryIds(request.getCategoryId()));
             criteriaList.add(Criteria.where("categoryId").in(categoryIds));
-            categoryViewKafkaTemplate.send("category-view", new CategoryViewEvent(request.getCategoryId(), LocalDateTime.now()));
+            kafkaTemplate.send("category-view", new CategoryViewEvent(request.getCategoryId(), LocalDateTime.now()));
         }
 
         if (!criteriaList.isEmpty()) {
