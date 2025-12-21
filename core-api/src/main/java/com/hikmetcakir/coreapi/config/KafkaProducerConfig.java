@@ -28,7 +28,7 @@ public class KafkaProducerConfig {
         props.put(ProducerConfig.DELIVERY_TIMEOUT_MS_CONFIG, 5000); // Max Waiting
         props.put(ProducerConfig.REQUEST_TIMEOUT_MS_CONFIG, 3000);
         props.put(ProducerConfig.MAX_BLOCK_MS_CONFIG, 3000); // Metadata Waiting Time
-        props.put(ProducerConfig.ACKS_CONFIG, 0); // Don't Wait Even If Not Exist Kafka
+        props.put(ProducerConfig.ACKS_CONFIG, "0"); // Don't Wait Even If Not Exist Kafka
         return new DefaultKafkaProducerFactory<>(props);
     }
 
