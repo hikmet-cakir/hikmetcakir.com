@@ -4,6 +4,7 @@ import com.hikmetcakir.coreapi.dto.article.ArticleQueryRequest;
 import com.hikmetcakir.coreapi.dto.article.ArticleSaveRequest;
 import com.hikmetcakir.coreapi.dto.article.ArticleSummary;
 import com.hikmetcakir.coreapi.dto.article.ArticleUpdateRequest;
+import com.hikmetcakir.coreapi.dto.article.ArticleLookupRequest;
 import com.hikmetcakir.coreapi.dto.event.ArticleViewEvent;
 import com.hikmetcakir.coreapi.dto.event.CategoryViewEvent;
 import com.hikmetcakir.coreapi.entity.ArticleEntity;
@@ -129,5 +130,10 @@ public class ArticleService {
 
         articleRepository.save(articleEntity);
         log.info("Article deleted successfully. articleId={}", id);
+    }
+
+    public List<ArticleSummary> lookup(ArticleLookupRequest request) {
+        List<ArticleEntity> articleEntityList = articleRepository.lookup(request.getNormalizedKeyword());
+        return articleEntityList.stream().map(ArticleMapper.INSTANCE::to).toList();
     }
 }

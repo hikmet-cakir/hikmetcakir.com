@@ -4,6 +4,7 @@ import com.hikmetcakir.coreapi.dto.article.ArticleQueryRequest;
 import com.hikmetcakir.coreapi.dto.article.ArticleSaveRequest;
 import com.hikmetcakir.coreapi.dto.article.ArticleSummary;
 import com.hikmetcakir.coreapi.dto.article.ArticleUpdateRequest;
+import com.hikmetcakir.coreapi.dto.article.ArticleLookupRequest;
 import com.hikmetcakir.coreapi.entity.ArticleEntity;
 import com.hikmetcakir.coreapi.repository.ArticleRepository;
 import org.junit.jupiter.api.Test;
@@ -257,6 +258,39 @@ public class ArticleServiceTest {
 
         verify(articleRepository).findById(id);
         verify(articleRepository, never()).save(any());
+        // endregion
+    }
+
+    @Test
+    void lookup_givenValidKeyword_returnMappedSummaries() {
+        // region Given
+        ArticleLookupRequest request = ArticleLookupRequest.builder()
+                .keyword("Example")
+                .build();
+        ArticleEntity entity1 = ArticleEntity.builder()
+                .id("1")
+                .title("Example title")
+                .content("Some content")
+                .build();
+        ArticleEntity entity2 = ArticleEntity.builder()
+                .id("2")
+                .title("Another example")
+                .content("More content")
+                .build();
+        List<ArticleEntity> entities = List.of(entity1, entity2);
+
+        when(articleRepository.lookup("example")).thenReturn(entities);
+        // endregion
+
+        // region When
+        List<ArticleSummary> result = articleService.lookup(request);
+        // endregion
+
+        // region Then
+        assertThat(result).hasSize(2);
+        assertThat(result.get(0).getTitle()).isEqualTo("Example title");
+        assertThat(result.get(1).getTitle()).isEqualTo("Another example");
+        verify(articleRepository).lookup("example");
         // endregion
     }
 }

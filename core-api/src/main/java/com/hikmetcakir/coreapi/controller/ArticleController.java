@@ -36,4 +36,10 @@ public class ArticleController {
     public void delete(@PathVariable("id") String id) {
         articleService.delete(id);
     }
+
+    @GetMapping("/lookup")
+    public ArticleLookupResponse lookup(@Valid @ModelAttribute ArticleLookupRequest request) {
+        List<ArticleSummary> articleSummaryList = articleService.lookup(request);
+        return ArticleLookupResponse.builder().articleSummaryList(articleSummaryList).build();
+    }
 }
