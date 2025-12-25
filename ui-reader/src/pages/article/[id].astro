@@ -10,11 +10,27 @@ if (!id) {
   throw new Error("Article ID is required");
 }
  
-const res = await fetch(`http://localhost:8080/article?id=${id}&size=10&page=0`);
-const data = await res.json();
-const article = data.articleSummaryList[0];
+let article;
+
+try {
+  const res = await fetch(`http://localhost:8080/article?id=${id}&size=10&page=0`);
+  
+  if (!res.ok) {
+    return Astro.redirect('/404');
+  }
+  
+  const data = await res.json();
+  article = data.articleSummaryList?.[0];
+
+  if (!article) {
+    return Astro.redirect('/404');
+  }
+} catch (error) {
+  console.error('Error fetching article:', error);
+  return Astro.redirect('/404');
+}
 ---
 
-<Layout title={article.title}>
+<Layout title={article?.title || 'Article Not Found'}>
   <ArticleDetail article={article} isPreview={false} />
 </Layout>

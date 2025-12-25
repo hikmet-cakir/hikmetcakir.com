@@ -38,8 +38,8 @@ const categories = await res.json();
         ))
        }
 
-      <div class="container">
-          <input type="text" name="text" class="input" required="" placeholder="Type to search...">
+      <div class="container" id="search-container">
+          <input type="text" name="text" id="search-input" class="input" required="" placeholder="Type to search...">
           <div class="icon">
               <svg xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512">
                   <title>Search</title>
@@ -47,6 +47,7 @@ const categories = await res.json();
                   <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M338.29 338.29L448 448"></path>
               </svg>
           </div>
+          <div id="search-results" class="search-results hidden"></div>
       </div>
     </nav> 
   </div> 
@@ -69,5 +70,290 @@ navbar.querySelectorAll(':scope > div.relative').forEach(parentDiv => {
   parentDiv.addEventListener('mouseleave', () => {
     timeout = setTimeout(() => { dropdown.classList.add('hidden'); }, 100);
   });
+});
+
+// Search functionality
+const API_BASE = 'http://localhost:8080';
+const searchInput = document.getElementById('search-input');
+const searchResults = document.getElementById('search-results');
+const searchContainer = document.getElementById('search-container');
+
+let searchTimeout;
+let currentSearchAbortController = null;
+let currentPage = 0;
+let pageSize = 5;
+let totalPages = 0;
+let totalCount = 0;
+let currentQuery = '';
+
+function truncate(text, maxLength = 100) {
+  if (!text) return "";
+  return text.length > maxLength ? text.substring(0, maxLength) + "..." : text;
+}
+
+function createResultItem(article) {
+  const item = document.createElement('div');
+  item.className = 'search-result-item';
+  item.innerHTML = `
+    <div class="search-result-title">${article.title || 'Untitled'}</div>
+    <div class="search-result-content">${truncate(article.content || '')}</div>
+  `;
+  item.addEventListener('click', () => {
+    window.location.href = `/article/${article.id}`;
+  });
+  return item;
+}
+
+function showLoading() {
+  searchResults.innerHTML = '<div class="search-results-loading">Aranıyor...</div>';
+  searchResults.classList.remove('hidden');
+}
+
+function createPaginationControls(page, totalPages, totalCount, query) {
+  const paginationDiv = document.createElement('div');
+  paginationDiv.className = 'search-pagination';
+  
+  const controls = document.createElement('div');
+  controls.className = 'search-pagination-controls';
+  
+  // Previous button
+  const prevBtn = document.createElement('button');
+  prevBtn.className = 'search-pagination-btn';
+  prevBtn.textContent = '←';
+  prevBtn.disabled = page === 0;
+  prevBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (page > 0) {
+      currentPage = page - 1;
+      performSearch(query, currentPage);
+    }
+  });
+  
+  // Page info with total count
+  const pageInfo = document.createElement('span');
+  pageInfo.className = 'search-pagination-info';
+  if (totalCount > 0) {
+    pageInfo.textContent = `${page * pageSize + 1}-${Math.min((page + 1) * pageSize, totalCount)} / ${totalCount} (Sayfa ${page + 1} / ${totalPages})`;
+  } else {
+    pageInfo.textContent = `Sayfa ${page + 1} / ${totalPages || 1}`;
+  }
+  
+  // Next button
+  const nextBtn = document.createElement('button');
+  nextBtn.className = 'search-pagination-btn';
+  nextBtn.textContent = '→';
+  nextBtn.disabled = page >= totalPages - 1;
+  nextBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (page < totalPages - 1) {
+      currentPage = page + 1;
+      performSearch(query, currentPage);
+    }
+  });
+  
+  controls.appendChild(prevBtn);
+  controls.appendChild(pageInfo);
+  controls.appendChild(nextBtn);
+  paginationDiv.appendChild(controls);
+  
+  return paginationDiv;
+}
+
+function showResults(articles, totalPages = 0, totalCount = 0, query = '') {
+  searchResults.innerHTML = '';
+  if (articles.length === 0) {
+    searchResults.innerHTML = '<div class="search-results-empty">Sonuç bulunamadı</div>';
+  } else {
+    // Limit to pageSize items (in case API returns more)
+    const limitedArticles = articles.slice(0, pageSize);
+    limitedArticles.forEach(article => {
+      searchResults.appendChild(createResultItem(article));
+    });
+    
+    // Always show pagination if there are results and (multiple pages or totalCount > pageSize)
+    if (totalPages > 1 || totalCount > pageSize || articles.length > pageSize) {
+      const pagination = createPaginationControls(currentPage, totalPages, totalCount, query);
+      searchResults.appendChild(pagination);
+    }
+  }
+  searchResults.classList.remove('hidden');
+}
+
+function hideResults() {
+  searchResults.classList.add('hidden');
+}
+
+async function performSearch(query, page = 0) {
+  if (!query || query.trim().length === 0) {
+    hideResults();
+    return;
+  }
+
+  // Reset to first page if it's a new query
+  if (query !== currentQuery) {
+    currentPage = 0;
+    currentQuery = query;
+  } else {
+    currentPage = page;
+  }
+
+  // Cancel previous request if any
+  if (currentSearchAbortController) {
+    currentSearchAbortController.abort();
+  }
+
+  currentSearchAbortController = new AbortController();
+  showLoading();
+
+  try {
+    // Try different possible parameter names for Spring Boot @ModelAttribute
+    // Common names: query, q, search, text, keyword
+    const paramNames = ['query', 'q', 'search', 'text', 'keyword'];
+    let lastError = null;
+    let success = false;
+    
+    for (const paramName of paramNames) {
+      try {
+        const url = `${API_BASE}/article/lookup?${paramName}=${encodeURIComponent(query)}&page=${page}&size=${pageSize}`;
+        console.log(`Trying search with parameter '${paramName}':`, url);
+        
+        const response = await fetch(url, {
+          signal: currentSearchAbortController.signal,
+          headers: {
+            'Accept': 'application/json',
+          }
+        });
+
+        console.log(`Response status for '${paramName}':`, response.status, response.statusText);
+
+        if (response.ok) {
+          const data = await response.json();
+          console.log('Search response data:', data);
+          
+          // Handle different possible response structures
+          let articles = data.articleSummaryList || data.articles || data || [];
+          if (!Array.isArray(articles)) {
+            articles = [];
+          }
+          
+          // Get total count from API response (try different possible field names)
+          let apiTotalCount = data.totalCount || data.totalElements || data.total || articles.length;
+          let apiTotalPages = data.totalPages;
+          
+          // If API returns all results, we need to paginate client-side
+          // But ideally API should handle pagination
+          // For now, if we get more than pageSize, assume there are more pages
+          if (articles.length > pageSize) {
+            // API returned more than requested, slice it
+            articles = articles.slice(page * pageSize, (page + 1) * pageSize);
+            if (!apiTotalCount || apiTotalCount === articles.length) {
+              apiTotalCount = articles.length + (page * pageSize); // Estimate
+            }
+          }
+          
+          // Calculate total pages
+          let calculatedTotalPages = 1;
+          let calculatedTotalCount = apiTotalCount;
+          
+          if (apiTotalPages !== undefined) {
+            calculatedTotalPages = apiTotalPages;
+          } else if (apiTotalCount !== undefined && apiTotalCount > 0) {
+            calculatedTotalPages = Math.ceil(apiTotalCount / pageSize);
+            calculatedTotalCount = apiTotalCount;
+          } else if (articles.length === pageSize) {
+            // If we got a full page, there might be more pages
+            calculatedTotalPages = page + 2; // At least one more page
+            calculatedTotalCount = (page + 2) * pageSize; // Estimate
+          } else {
+            calculatedTotalPages = page + 1; // This is the last page
+            calculatedTotalCount = (page * pageSize) + articles.length;
+          }
+          
+          totalPages = calculatedTotalPages;
+          totalCount = calculatedTotalCount;
+          showResults(articles, totalPages, totalCount, query);
+          success = true;
+          break;
+        } else if (response.status === 400) {
+          // 400 Bad Request usually means wrong parameter name, try next
+          const errorText = await response.text();
+          console.log(`Parameter '${paramName}' failed with 400:`, errorText);
+          lastError = new Error(`Parameter '${paramName}' not accepted`);
+          continue;
+        } else {
+          // Other errors (500, 404, etc.) might be server issues
+          const errorText = await response.text();
+          console.error(`Response error for '${paramName}':`, errorText);
+          throw new Error(`Search failed: ${response.status} ${response.statusText}`);
+        }
+      } catch (error) {
+        if (error.name === 'AbortError') {
+          throw error; // Re-throw abort errors
+        }
+        lastError = error;
+        console.log(`Parameter '${paramName}' failed:`, error.message);
+        // Continue to next parameter name
+      }
+    }
+    
+    if (!success && lastError) {
+      throw lastError;
+    }
+  } catch (error) {
+    if (error.name === 'AbortError') {
+      return; // Request was cancelled, ignore
+    }
+    console.error('Search error details:', {
+      message: error.message,
+      stack: error.stack,
+      error: error
+    });
+    searchResults.innerHTML = `<div class="search-results-empty">Arama sırasında bir hata oluştu: ${error.message}</div>`;
+    searchResults.classList.remove('hidden');
+  } finally {
+    currentSearchAbortController = null;
+  }
+}
+
+searchInput.addEventListener('input', (e) => {
+  const query = e.target.value.trim();
+  
+  clearTimeout(searchTimeout);
+  
+  if (query.length === 0) {
+    hideResults();
+    return;
+  }
+
+  // Debounce search - wait 300ms after user stops typing
+  searchTimeout = setTimeout(() => {
+    performSearch(query, 0); // Reset to first page for new search
+  }, 300);
+});
+
+searchInput.addEventListener('focus', () => {
+  const query = searchInput.value.trim();
+  if (query.length > 0 && !searchResults.classList.contains('hidden')) {
+    // Results are already shown, do nothing
+    return;
+  }
+  if (query.length > 0) {
+    performSearch(query, 0); // Reset to first page
+  }
+});
+
+// Hide results when clicking outside
+document.addEventListener('click', (e) => {
+  if (!searchContainer.contains(e.target)) {
+    hideResults();
+  }
+});
+
+// Handle escape key
+searchInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    hideResults();
+    searchInput.blur();
+  }
 });
 </script>
