@@ -139,4 +139,22 @@ public class ArticleControllerIntegrationTest {
                 .andExpect(jsonPath("$.articleSummaryList.length()").value(1))
                 .andExpect(jsonPath("$.articleSummaryList[0].id").value(id));
     }
+
+    @Test
+    void lookup_shouldReturnSingleArticle() throws Exception {
+        String id = createArticle("Unique Title", "Unique Content", "cat1", "user1");
+
+        mvc.perform(get("/article/lookup").param("keyword", "Unique Title"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.articleSummaryList.length()").value(1))
+                .andExpect(jsonPath("$.articleSummaryList[0].id").value(id))
+                .andExpect(jsonPath("$.articleSummaryList[0].title").value("Unique Title"));
+    }
+
+    @Test
+    void lookup_shouldReturnEmptyList() throws Exception {
+        mvc.perform(get("/article/lookup").param("keyword", "Unique Title"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.articleSummaryList.length()").value(0));
+    }
 }
