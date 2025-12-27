@@ -11,9 +11,14 @@ public interface ArticleRepository extends MongoRepository<ArticleEntity, String
 
     @Query("""
     {
-      "$or": [
-        { "title":   { "$regex": ?0, "$options": "i" } },
-        { "content": { "$regex": ?0, "$options": "i" } }
+      "$and": [
+        {
+          "$or": [
+            { "title":   { "$regex": ?0, "$options": "i" } },
+            { "content": { "$regex": ?0, "$options": "i" } }
+          ]
+        },
+        { "deleted": false }
       ]
     }
     """)
