@@ -14,6 +14,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.kafka.core.KafkaTemplate;
 
 import java.util.List;
 import java.util.Optional;
@@ -38,6 +39,9 @@ public class ArticleServiceTest {
 
     @Mock
     MongoTemplate mongoTemplate;
+
+    @Mock
+    KafkaTemplate<String, Object> kafkaTemplate;
 
     @Test
     void query_givenArticleTitleMatches_returnOneRecordAsList() {
