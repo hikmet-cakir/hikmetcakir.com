@@ -293,4 +293,43 @@ public class ArticleServiceTest {
         verify(articleRepository).lookup("example");
         // endregion
     }
+
+    @Test
+    void lookup_givenNoMatchingKeyword_returnEmptyList() {
+        // region Given
+        ArticleLookupRequest request = ArticleLookupRequest.builder()
+                .keyword("NotExists")
+                .build();
+
+        when(articleRepository.lookup("notexists")).thenReturn(List.of());
+        // endregion
+
+        // region When
+        List<ArticleSummary> result = articleService.lookup(request);
+        // endregion
+
+        // region Then
+        assertThat(result).isEmpty();
+        verify(articleRepository).lookup("notexists");
+        // endregion
+    }
+
+    @Test
+    void lookup_givenRepositoryThrowsException_thenPropagateException() {
+        // region Given
+        ArticleLookupRequest request = ArticleLookupRequest.builder()
+                .keyword("Error")
+                .build();
+
+        when(articleRepository.lookup("error")).thenThrow(new RuntimeException("DB error"));
+        // endregion
+
+        // region Then
+        assertThatThrownBy(() -> articleService.lookup(request))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessageContaining("DB error");
+
+        verify(articleRepository).lookup("error");
+        // endregion
+    }
 }
