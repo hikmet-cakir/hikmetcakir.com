@@ -1,7 +1,18 @@
 document.addEventListener("DOMContentLoaded", () => {
+    const prismScript = document.createElement("script");
+    prismScript.src = "https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js";
+    const prismJsScript = document.createElement("script");
+    prismJsScript.src = "https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js";
+    
+    prismScript.onload = () => {
+      document.body.appendChild(prismJsScript);
+    };
+
     const script = document.createElement("script");
     script.src = "https://cdn.quilljs.com/1.3.6/quill.js";
     script.onload = async () => {
+        document.body.appendChild(prismScript);
+        
         const quill = new Quill("#editor-container", {
         theme: "snow",
         modules: {
@@ -23,6 +34,40 @@ document.addEventListener("DOMContentLoaded", () => {
             ]
         }
         });
+        
+        function highlightCodeBlocks() {
+          if (!window.Prism) return;
+          
+          const codeBlocks = quill.root.querySelectorAll('pre.ql-syntax');
+          codeBlocks.forEach(block => {
+            if (!block.classList.contains('prism-highlighted')) {
+              block.classList.add('prism-highlighted');
+              const code = block.textContent || '';
+              const lang = 'javascript';
+              const codeElement = document.createElement('code');
+              codeElement.className = `language-${lang}`;
+              codeElement.textContent = code;
+              block.innerHTML = '';
+              block.appendChild(codeElement);
+              Prism.highlightElement(codeElement);
+            }
+          });
+        }
+
+        let highlightTimeout;
+        quill.on('text-change', () => {
+          clearTimeout(highlightTimeout);
+          highlightTimeout = setTimeout(() => {
+            highlightCodeBlocks();
+          }, 300);
+        });
+
+        const checkPrism = setInterval(() => {
+          if (window.Prism) {
+            clearInterval(checkPrism);
+            setTimeout(highlightCodeBlocks, 100);
+          }
+        }, 100);
 
         const btn = document.getElementById("btnSave");
         const titleInput = document.getElementById("articleTitle");
