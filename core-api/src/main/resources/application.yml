@@ -1,27 +1,8 @@
 spring:
+  cloud:
+    config:
+      uri: http://localhost:8888
+  config:
+    import: "configserver:"
   application:
-    name: core-api
-  data:
-    mongodb:
-      uri: mongodb://localhost:27017/hikmetcakirblog_core
-  cache:
-    type: redis
-  redis:
-    host: localhost
-    port: 6379
-
-server:
-  port: 8080
-
-
-security:
-  jwt:
-    secret: change_this_super_secret_and_keep_it_safe
-    accessTokenExpirationMillis: 900000    # 15 dakika
-    refreshTokenExpirationMillis: 604800000 # 7 gün
-
-frontend:
-  editor:
-    origin: http://localhost:4001
-  reader:
-    origin: http://localhost:4000
+    name: coreapi-application
