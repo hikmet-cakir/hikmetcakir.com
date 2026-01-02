@@ -1,3 +1,15 @@
+server:
+  port: 8888
+
 spring:
   application:
-    name: config-api
+    name: config-api-git
+  cloud:
+    config:
+      server:
+        git:
+          uri: ${GIT_URI}
+          default-label: "main"
+          skip-ssl-validation: true
+          username: ${GIT_USERNAME}
+          password: ${GIT_PASSWORD}
