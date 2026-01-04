@@ -133,9 +133,9 @@ function createPaginationControls(page, totalPages, totalCount, query) {
   const pageInfo = document.createElement('span');
   pageInfo.className = 'search-pagination-info';
   if (totalCount > 0) {
-    pageInfo.textContent = `${page * pageSize + 1}-${Math.min((page + 1) * pageSize, totalCount)} / ${totalCount} (Sayfa ${page + 1} / ${totalPages})`;
+    pageInfo.textContent = `${page * pageSize + 1}-${Math.min((page + 1) * pageSize, totalCount)} / ${totalCount} (Page ${page + 1} / ${totalPages})`;
   } else {
-    pageInfo.textContent = `Sayfa ${page + 1} / ${totalPages || 1}`;
+    pageInfo.textContent = `Page ${page + 1} / ${totalPages || 1}`;
   }
   
   // Next button
