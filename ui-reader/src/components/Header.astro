@@ -119,7 +119,7 @@ function createPaginationControls(page, totalPages, totalCount, query) {
   // Previous button
   const prevBtn = document.createElement('button');
   prevBtn.className = 'search-pagination-btn';
-  prevBtn.textContent = '←';
+  prevBtn.textContent = '❮';
   prevBtn.disabled = page === 0;
   prevBtn.addEventListener('click', (e) => {
     e.stopPropagation();
@@ -141,7 +141,7 @@ function createPaginationControls(page, totalPages, totalCount, query) {
   // Next button
   const nextBtn = document.createElement('button');
   nextBtn.className = 'search-pagination-btn';
-  nextBtn.textContent = '→';
+  nextBtn.textContent = '❯';
   nextBtn.disabled = page >= totalPages - 1;
   nextBtn.addEventListener('click', (e) => {
     e.stopPropagation();
