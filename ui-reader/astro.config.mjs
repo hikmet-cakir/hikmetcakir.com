@@ -3,6 +3,7 @@ import tailwindcss from '@tailwindcss/vite';
 import node from '@astrojs/node';
 
 export default defineConfig({
+  output: 'server',
   vite: {
     plugins: [tailwindcss()]
   },
