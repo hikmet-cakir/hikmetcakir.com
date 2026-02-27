@@ -82,8 +82,7 @@ log.txt
 
 *.DS_Store
 out/
-.splitter/
-.env
+.splitter/ 
  
 
 __pycache__/
@@ -105,9 +104,7 @@ dist/
 .cache/
 .vercel/
 
-# environment variables
-.env
-.env.production
+# environment variables 
 
 
 # logs
