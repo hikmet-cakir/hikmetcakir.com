@@ -1,7 +1,8 @@
 ---
 import '../styles/search-bar.css';
 
-const res = await fetch('http://localhost:8080/category/hierarchy?levels=1,2');
+const API = import.meta.env.PUBLIC_API_BASE;
+const res = await fetch( `${API}/category/hierarchy?levels=1,2`);
 const categories = await res.json();
 ---
 
@@ -73,7 +74,7 @@ navbar.querySelectorAll(':scope > div.relative').forEach(parentDiv => {
 });
 
 // Search functionality
-const API_BASE = 'http://localhost:8080';
+const API_BASE = import.meta.env.PUBLIC_API_BASE;
 const searchInput = document.getElementById('search-input');
 const searchResults = document.getElementById('search-results');
 const searchContainer = document.getElementById('search-container');

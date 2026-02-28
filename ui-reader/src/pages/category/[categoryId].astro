@@ -6,7 +6,7 @@ export const prerender = false;
 
 const { categoryId } = Astro.params;
 const PAGE_SIZE = 12;
-const API_BASE = "http://localhost:8080";
+const API_BASE = import.meta.env.PUBLIC_API_BASE;
 
 const res = await fetch(`${API_BASE}/article?size=${PAGE_SIZE}&page=0&categoryId=${categoryId}`);
 const data = await res.json();
