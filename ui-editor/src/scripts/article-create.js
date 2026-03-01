@@ -1,3 +1,5 @@
+  const API_BASE = document.body.dataset.apiBase;
+
   document.addEventListener("DOMContentLoaded", () => {
           const prismScript = document.createElement("script");
           prismScript.src = "https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js";
@@ -90,7 +92,7 @@
 
               (async () => {
                 try {
-                  const categoryRes = await fetch("http://localhost:8080/category");
+                  const categoryRes = await fetch(`${API_BASE}/category`);
                   const categories = await categoryRes.json();
                   categorySelect.innerHTML = '<option value="">Select category...</option>';
                   categories.forEach(cat => {
@@ -117,7 +119,7 @@
                 }
 
                 try {
-                  const res = await fetch("http://localhost:8080/article", {
+                  const res = await fetch(`${API_BASE}/article`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     credentials: "include",

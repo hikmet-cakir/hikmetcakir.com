@@ -2,6 +2,8 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import '../../styles/quill-code-block.css';
  
+const API_BASE = import.meta.env.PUBLIC_API_BASE;
+ 
 export const prerender = false;
 
 export async function getStaticPaths() {
@@ -12,11 +14,11 @@ let article = {};
 let categories = []; 
 if (id) {
      
-  const res = await fetch(`http://localhost:8080/article?id=${id}&size=10&page=0`);
+  const res = await fetch(`${API_BASE}/article?id=${id}&size=10&page=0`);
   const data = await res.json();
   article = data.articleSummaryList[0];
    
-  const categoriesRes = await fetch("http://localhost:8080/category");
+  const categoriesRes = await fetch(`${API_BASE}/category`);
   categories = await categoriesRes.json();
   console.log(categories);
 } 

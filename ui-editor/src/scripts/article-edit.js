@@ -1,3 +1,5 @@
+const API_BASE = document.body.dataset.apiBase;
+
 document.addEventListener("DOMContentLoaded", () => {
     const prismScript = document.createElement("script");
     prismScript.src = "https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js";
@@ -87,7 +89,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         try {
-            const res = await fetch(`http://localhost:8080/article/${articleId}`, {
+        const res = await fetch(`${API_BASE}/article/${articleId}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             credentials: "include",

@@ -1,6 +1,8 @@
 --- 
 import BaseLayout from '../../layouts/BaseLayout.astro';  
 
+const API_BASE = import.meta.env.PUBLIC_API_BASE;
+
 export const prerender = false;
 
 export async function getStaticPaths() {
@@ -11,7 +13,7 @@ const { id } = Astro.params;
 let categories = [];
 let categoryData = null;
 
-const categoriesRes = await fetch("http://localhost:8080/category");
+const categoriesRes = await fetch(`${API_BASE}/category`);
 categories = await categoriesRes.json();
  
 if (id) {
@@ -61,6 +63,8 @@ if (id) {
             const btn = document.getElementById("btnSave");
             const titleInput = document.getElementById("articleTitle"); 
             const parentCategory = document.getElementById("articleCategory");  
+            const apiBase = document.body.dataset.apiBase;
+
             btn.addEventListener("click", async () => {
                 const name = titleInput.value.trim();   
                 const parentId = parentCategory.value || null;  
@@ -72,7 +76,7 @@ if (id) {
                 }
 
                 try {
-                    const res = await fetch(`http://localhost:8080/category/${categoryId}`, {
+                    const res = await fetch(`${apiBase}/category/${categoryId}`, {
                         method: "PUT",
                         headers: { "Content-Type": "application/json" },
                         credentials: "include",

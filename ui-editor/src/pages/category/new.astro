@@ -1,11 +1,13 @@
 --- 
 import BaseLayout from '../../layouts/BaseLayout.astro';  
 
-const res = await fetch("http://localhost:8080/article?size=10&page=0");
+const API_BASE = import.meta.env.PUBLIC_API_BASE;
+
+const res = await fetch(`${API_BASE}/article?size=10&page=0`);
 const data = await res.json();
 const articles = data.articleSummaryList || [];
 
-const categoriesRes = await fetch("http://localhost:8080/category");
+const categoriesRes = await fetch(`${API_BASE}/category`);
 const categories = await categoriesRes.json();
 --- 
 <BaseLayout> 
@@ -41,6 +43,7 @@ const categories = await categoriesRes.json();
             const btn = document.getElementById("btnSave");
             const titleInput = document.getElementById("articleTitle"); 
             const parentCategory = document.getElementById("articleCategory"); 
+            const apiBase = document.body.dataset.apiBase;
 
             btn.addEventListener("click", async () => {
                 const name = titleInput.value.trim();   
@@ -51,7 +54,7 @@ const categories = await categoriesRes.json();
                 }
 
                 try {
-                    const res = await fetch("http://localhost:8080/category", {
+                    const res = await fetch(`${apiBase}/category`, {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         credentials: "include",

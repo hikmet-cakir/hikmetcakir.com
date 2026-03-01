@@ -1,6 +1,6 @@
-import { defineMiddleware } from "astro/middleware";
+const API_BASE = import.meta.env.PUBLIC_API_BASE;
 
-export const onRequest = defineMiddleware(async ({ request, redirect }, next) => {
+export async function onRequest({ request, redirect }, next) {
   const url = new URL(request.url);
   const path = url.pathname;
 
@@ -11,7 +11,7 @@ export const onRequest = defineMiddleware(async ({ request, redirect }, next) =>
 
   if (publicPaths.includes(path)) {
     if (path === "/login" && token) {
-      const verifyRes = await fetch("http://localhost:8080/auth/verify", {
+      const verifyRes = await fetch(`${API_BASE}/auth/verify`, {
         method: "GET",
         headers: { Cookie: `access_token=${token}` },
         credentials: "include"
@@ -28,7 +28,7 @@ export const onRequest = defineMiddleware(async ({ request, redirect }, next) =>
     return redirect("/login");
   }
 
-  const verifyRes = await fetch("http://localhost:8080/auth/verify", {
+  const verifyRes = await fetch(`${API_BASE}/auth/verify`, {
     method: "GET",
     headers: { Cookie: `access_token=${token}` },
     credentials: "include"
@@ -39,4 +39,4 @@ export const onRequest = defineMiddleware(async ({ request, redirect }, next) =>
   }
 
   return next();
-});
+}

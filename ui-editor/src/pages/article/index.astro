@@ -1,9 +1,11 @@
 --- 
 import BaseLayout from '../../layouts/BaseLayout.astro';  
 
+const API_BASE = import.meta.env.PUBLIC_API_BASE;
+
 const pageSize = 10;
 const currentPage = Number(Astro.url.searchParams.get('page') || '0');
-const res = await fetch(`http://localhost:8080/article?size=${pageSize}&page=${currentPage}`);
+const res = await fetch(`${API_BASE}/article?size=${pageSize}&page=${currentPage}`);
 const data = await res.json();
 const articles = data.articleSummaryList || [];
 const hasNextPage = articles.length === pageSize;
@@ -96,6 +98,8 @@ const hasPreviousPage = currentPage > 0;
     </div>
 
      <script>
+      const API_BASE = document.body.dataset.apiBase;
+
       document.addEventListener("DOMContentLoaded", () => {
         const editButtons = document.querySelectorAll(".btn-edit");
         editButtons.forEach(btn => {
@@ -112,7 +116,7 @@ const hasPreviousPage = currentPage > 0;
             if (!confirm("Are you sure you want to delete this article?")) return;
 
             try {
-              const res = await fetch(`http://localhost:8080/article/${id}`, {
+              const res = await fetch(`${API_BASE}/article/${id}`, {
                 method: "DELETE",
                 credentials: "include"
               });

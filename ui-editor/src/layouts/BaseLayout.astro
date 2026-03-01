@@ -2,6 +2,7 @@
 import Header from '../components/Header.astro';
 import Sidebar from '../components/Sidebar.astro';
 import '../styles/dashboard.css';   
+const API_BASE = import.meta.env.PUBLIC_API_BASE;
 ---
 <html lang="en">
   <head>
@@ -13,7 +14,7 @@ import '../styles/dashboard.css';
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"/> 
     <slot name="head" />
   </head>
-  <body>  
+  <body data-api-base={API_BASE}>  
       <main class="container"> 
         <Header /> 
         <Sidebar />
