@@ -12,8 +12,6 @@ import com.hikmetcakir.coreapi.mapper.ArticleMapper;
 import com.hikmetcakir.coreapi.repository.ArticleRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -42,7 +40,6 @@ public class ArticleService {
 
     private final KafkaTemplate<String, Object> kafkaTemplate;
 
-    @Cacheable(value = "articleQueryCache", key = "#request.toCacheKey()")
     public List<ArticleSummary> query(ArticleQueryRequest request) {
         Query query = new Query();
         List<Criteria> criteriaList = new ArrayList<>();
@@ -78,7 +75,6 @@ public class ArticleService {
         return articleEntityList.stream().map(ArticleMapper.INSTANCE::to).toList();
     }
 
-    @CacheEvict(value = "articleQueryCache", allEntries = true)
     public String save(ArticleSaveRequest request) {
         ArticleEntity articleEntity = ArticleEntity.builder()
                 .title(request.getTitle())
@@ -101,7 +97,6 @@ public class ArticleService {
         return articleId;
     }
 
-    @CacheEvict(value = "articleQueryCache", allEntries = true)
     public void update(String id, ArticleUpdateRequest request) {
         ArticleEntity articleEntity = articleRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Article with given id does not exist and cannot be updated"));
@@ -124,7 +119,6 @@ public class ArticleService {
         );
     }
 
-    @CacheEvict(value = "articleQueryCache", allEntries = true)
     public void delete(String id) {
         ArticleEntity articleEntity = articleRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Article with given id does not exist and cannot be deleted"));
