@@ -5,4 +5,4 @@ spring:
   config:
     import: "configserver:"
   application:
-    name: coreapi-application
+    name: coreapi-application-dev

@@ -5,8 +5,8 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "preview": "astro preview",
-    "start": "astro preview",
+    "preview": "astro preview --host 0.0.0.0 --port 4000",
+    "start": "astro preview --host 0.0.0.0 --port 4000",
     "astro": "astro"
   },
   "dependencies": {
