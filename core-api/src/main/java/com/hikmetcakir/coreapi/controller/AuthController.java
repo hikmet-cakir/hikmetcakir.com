@@ -52,7 +52,7 @@ public class AuthController {
         response.addHeader("Set-Cookie", accessCookie.toString());
         response.addHeader("Set-Cookie", refreshCookie.toString());
 
-        return ResponseEntity.ok().body(Map.of("status", "ok"));
+        return ResponseEntity.ok().body(Map.of("status", "ok", "access_token", access));
     }
 
     @GetMapping("/verify")

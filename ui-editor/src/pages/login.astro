@@ -66,8 +66,9 @@ const API_BASE = import.meta.env.PUBLIC_API_BASE;
           }
 
           const data = await response.json().catch(() => null); 
-          if (data && data.status === "ok") {
-            document.cookie = `access_token=${data.access_token}; path=/; secure; samesite=lax`;
+          if (data && data.status === "ok" && data.access_token) {
+            const secure = location.protocol === "https:" ? "; secure" : "";
+            document.cookie = `access_token=${data.access_token}; path=/; samesite=lax${secure}`;
             window.location.href = "/dashboard";  
           } else {
             alert("Email veya şifre yanlış!");
