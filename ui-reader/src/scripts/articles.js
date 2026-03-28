@@ -8,7 +8,7 @@ export function initInfiniteScroll() {
     if (grid && sentinel && loader && retry) {
       let page = 1, busy = false, more = true;
       const size = Number(grid.dataset.pageSize || '12');
-      const base = grid.dataset.apiBase || '';
+      const base = 'http://localhost/api';
 
       const show = (el, v) => el.classList.toggle('hidden', !v);
       const trunc = (t, n = 180) => t ? (t.length > n ? t.slice(0, n) + '...' : t) : '';
