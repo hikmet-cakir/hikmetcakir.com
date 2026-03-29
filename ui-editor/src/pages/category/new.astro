@@ -47,7 +47,7 @@ const categories = await categoriesRes.json();
 
             btn.addEventListener("click", async () => {
                 const name = titleInput.value.trim();   
-                const parentId = parentCategory.value;  
+                const parentId = parentCategory.value || null;  
                 if (!name) {
                     alert("name cannot be empty!");
                     return;
@@ -65,7 +65,7 @@ const categories = await categoriesRes.json();
 
                     alert("Category added successfully!");
                     titleInput.value = "";  
-                    parentId.selectedIndex = 0;;
+                    if (parentId) parentId.selectedIndex = 0;;
                 } catch (err) { alert("Error: " + err.message); }
             }); 
         });
