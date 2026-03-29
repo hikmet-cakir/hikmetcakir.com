@@ -4,6 +4,8 @@ export async function onRequest({ request, redirect }, next) {
   const url = new URL(request.url);
   const path = url.pathname;
 
+  console.log("MIDDLEWARE PATH:", path);
+
   const publicPaths = ["/login", "/favicon.ico"];
 
   const cookies = request.headers.get("cookie") || "";
@@ -11,6 +13,7 @@ export async function onRequest({ request, redirect }, next) {
 
   if (publicPaths.includes(path)) {
     if (path === "/login" && token) {
+      console.log("Path is login and token exist!");
       const verifyRes = await fetch(`${API_BASE}/auth/verify`, {
         method: "GET",
         headers: { Cookie: `access_token=${token}` },
@@ -21,11 +24,13 @@ export async function onRequest({ request, redirect }, next) {
         return redirect("/dashboard");
       }
     }
+    console.log("Next step");
     return next();
   }
 
   if (!token) {
-    return redirect("/login");
+    console.log("Token not found!");
+    return redirect("/admin/login");
   }
 
   const verifyRes = await fetch(`${API_BASE}/auth/verify`, {
@@ -34,8 +39,9 @@ export async function onRequest({ request, redirect }, next) {
     credentials: "include"
   });
 
-  if (!verifyRes.ok) {
-    return redirect("/login");
+  if (!verifyRes.ok) { 
+    console.log("Verify Response is not ok");
+    return redirect("/admin/login"); 
   }
 
   return next();

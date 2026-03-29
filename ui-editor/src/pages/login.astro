@@ -1,7 +1,6 @@
 --- 
 import '../styles/cms-login.css';
-import '../scripts/cms-login.js';
-const API_BASE = import.meta.env.PUBLIC_API_BASE;
+import '../scripts/cms-login.js'; 
 ---
 
 <html>
@@ -9,7 +8,7 @@ const API_BASE = import.meta.env.PUBLIC_API_BASE;
         <meta charset="UTF-8" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
     </head>
-    <body data-api-base={API_BASE}>
+    <body data-api-base={import.meta.env.CLIENT_PUBLIC_API_BASE}>
         <div class="overlay"> 
         <form id="login-form"> 
         <div class="con"> 
@@ -69,7 +68,7 @@ const API_BASE = import.meta.env.PUBLIC_API_BASE;
           if (data && data.status === "ok" && data.access_token) {
             const secure = location.protocol === "https:" ? "; secure" : "";
             document.cookie = `access_token=${data.access_token}; path=/; samesite=lax${secure}`;
-            window.location.href = "/dashboard";  
+            window.location.href = "/admin/dashboard";  
           } else {
             alert("Email veya şifre yanlış!");
           }

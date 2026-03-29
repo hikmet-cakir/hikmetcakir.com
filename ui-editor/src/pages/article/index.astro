@@ -105,7 +105,7 @@ const hasPreviousPage = currentPage > 0;
         editButtons.forEach(btn => {
           btn.addEventListener("click", () => {
             const id = (btn as HTMLButtonElement).dataset.id;
-            window.location.href = `/article/${id}`;
+            window.location.href = `/admin/article/${id}`;
           });
         });
 
@@ -138,7 +138,7 @@ const hasPreviousPage = currentPage > 0;
       const addBtn = document.getElementById("btnAddNew");
       if (addBtn) {
         addBtn.addEventListener("click", () => {
-          window.location.href = "/article/new";
+          window.location.href = "/admin/article/new";
         });
       }
 
@@ -147,7 +147,7 @@ const hasPreviousPage = currentPage > 0;
         prevBtn.addEventListener("click", () => {
           const currentPage = new URLSearchParams(window.location.search).get('page') || '0';
           const newPage = Math.max(0, parseInt(currentPage) - 1);
-          window.location.href = `/article${newPage > 0 ? `?page=${newPage}` : ''}`;
+          window.location.href = `/admin/article${newPage > 0 ? `?page=${newPage}` : ''}`;
         });
       }
 
@@ -156,7 +156,7 @@ const hasPreviousPage = currentPage > 0;
         nextBtn.addEventListener("click", () => {
           const currentPage = new URLSearchParams(window.location.search).get('page') || '0';
           const newPage = parseInt(currentPage) + 1;
-          window.location.href = `/article?page=${newPage}`;
+          window.location.href = `/admin/article?page=${newPage}`;
         });
       }
     </script>

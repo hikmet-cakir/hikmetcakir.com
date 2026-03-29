@@ -89,7 +89,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         try {
-        const res = await fetch(`${API_BASE}/article/${articleId}`, {
+        const res = await fetch(`http://localhost/api/article/${articleId}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             credentials: "include",
@@ -104,7 +104,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (!res.ok) throw new Error(await res.text());
 
             alert("Article updated successfully!");
-            window.location.href = "/article";
+            window.location.href = "/admin/article";
         } catch (err) {
             alert("Error: " + err.message);
         }

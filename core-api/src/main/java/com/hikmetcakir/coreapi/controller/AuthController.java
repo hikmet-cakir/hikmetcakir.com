@@ -23,11 +23,11 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest req, HttpServletResponse response) {
         var opt = userRepository.findByEmail(req.getEmail());
-        if (opt.isEmpty()) return ResponseEntity.status(401).body("Invalid credentials");
+        if (opt.isEmpty()) return ResponseEntity.status(401).body("Invalid credentials1");
 
         var user = opt.get();
         if (!passwordEncoder.matches(req.getPassword(), user.getPassword())) {
-            return ResponseEntity.status(401).body("Invalid credentials");
+            return ResponseEntity.status(401).body("Invalid credentials2");
         }
 
         String access = jwtUtil.generateAccessToken(user.getId(), user.getRole());
