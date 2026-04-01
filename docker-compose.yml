@@ -28,7 +28,7 @@ services:
     ports:
       - "8888:8888"
     restart: always
-    environment:
+    environment:      
       - GIT_URI=ENTER_GIT_URI
       - GIT_USERNAME=ENTER_USERNAME
       - GIT_PASSWORD=ENTER_GIT_PASSWORD
@@ -59,7 +59,7 @@ services:
       - hikmetcakirblog_network
 
   uireader:
-    image: hikmetcakirdev/uireader:v36
+    image: hikmetcakirdev/uireader:v37
     container_name: uireader
     networks:
       - hikmetcakirblog_network
@@ -70,7 +70,7 @@ services:
       - NODE_ENV=production
     
   uieditor:
-    image: hikmetcakirdev/uieditor:v31
+    image: hikmetcakirdev/uieditor:v32
     container_name: uieditor
     networks:
       - hikmetcakirblog_network
