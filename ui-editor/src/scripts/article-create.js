@@ -92,7 +92,7 @@
 
               (async () => {
                 try {
-                  const categoryRes = await fetch(`http://localhost/api/category`);
+                  const categoryRes = await fetch(`http://hikmetcakir.com/api/category`);
                   const categories = await categoryRes.json();
                   categorySelect.innerHTML = '<option value="">Select category...</option>';
                   categories.forEach(cat => {
@@ -119,7 +119,7 @@
                 }
 
                 try {
-                  const res = await fetch(`http://localhost/api/article`, {
+                  const res = await fetch(`http://hikmetcakir.com/api/article`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     credentials: "include",

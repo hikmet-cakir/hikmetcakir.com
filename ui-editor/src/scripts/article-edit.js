@@ -89,7 +89,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         try {
-        const res = await fetch(`http://localhost/api/article/${articleId}`, {
+        const res = await fetch(`http://hikmetcakir.com/api/article/${articleId}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             credentials: "include",
