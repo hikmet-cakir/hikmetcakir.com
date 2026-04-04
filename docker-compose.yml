@@ -59,7 +59,7 @@ services:
       - hikmetcakirblog_network
 
   uireader:
-    image: hikmetcakirdev/uireader:v37
+    image: hikmetcakirdev/uireader:v44
     container_name: uireader
     networks:
       - hikmetcakirblog_network
@@ -70,7 +70,7 @@ services:
       - NODE_ENV=production
     
   uieditor:
-    image: hikmetcakirdev/uieditor:v32
+    image: hikmetcakirdev/uieditor:v37
     container_name: uieditor
     networks:
       - hikmetcakirblog_network
