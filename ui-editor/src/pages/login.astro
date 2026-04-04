@@ -1,6 +1,5 @@
 --- 
-import '../styles/cms-login.css';
-import '../scripts/cms-login.js'; 
+import '../styles/cms-login.css'; 
 ---
 
 <html>
@@ -27,21 +26,18 @@ import '../scripts/cms-login.js';
             </span> 
             <input class="form-input" type="password" placeholder="Password" id="pwd"  name="password" required> 
             <span>
-                <i class="fa fa-eye" aria-hidden="true" type="button" id="eye"></i>
+                <i class="fa fa-eye-slash" aria-hidden="true" type="button" id="eye"></i>
             </span> 
             <br> 
             <button class="log-in"> Log In </button>
-        </div> 
-        <div class="other"> 
-            <button class="btn submits frgt-pass">Forgot Password</button>  
-            <button class="btn submits sign-up">Sign Up  
-            <i class="fa fa-user-plus" aria-hidden="true"></i>
-            </button>
-        </div> 
+        </div>  
         </div> 
         </form>
         </div>
     <script>   
+      import { initPasswordToggle } from '../scripts/cms-login.js';
+      initPasswordToggle();
+
       const API_BASE = document.body.dataset.apiBase;
       const form = document.getElementById("login-form");
 
