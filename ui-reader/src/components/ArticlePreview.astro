@@ -1,10 +1,15 @@
 ---
 const { article } = Astro.props;
 
+function stripHtml(html) {
+  if (!html) return "";
+  return html.replace(/<[^>]*>/g, "");
+}
 
 function truncate(text, maxLength = 180) {
   if (!text) return "";
-  return text.length > maxLength ? text.substring(0, maxLength) + "..." : text;
+  const clean = stripHtml(text);
+  return clean.length > maxLength ? clean.substring(0, maxLength) + "..." : clean;
 }
  
 const thumbnail = article.thumbnail || `https://picsum.photos/seed/${article.id}/600/400`;

@@ -11,7 +11,7 @@ const articles = data.articleSummaryList;
 ---
 
 <Layout title="Hikmet Cakir Blog">  
-  <div id="articles-grid" class="grid gap-8 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 px-[15%] py-10 items-stretch" data-api-base={API_BASE} data-page-size={PAGE_SIZE}>
+  <div id="articles-grid" class="grid gap-8 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 px-[15%] py-10 items-stretch" data-api-base={import.meta.env.CLIENT_PUBLIC_API_BASE} data-page-size={PAGE_SIZE}>
     { articles.map((article) => <ArticlePreview article={article} key={article.id} />) }
   </div>
   <div id="scroll-sentinel" class="h-8"></div>
