@@ -13,7 +13,83 @@ const thumbnail = article.thumbnail || `https://picsum.photos/seed/${article.id}
     <img src={thumbnail} alt={article.title} class="w-full rounded-xl object-cover max-h-[520px]" loading="lazy" />
   </figure>
 
-  <section class="max-w-3xl">
+  <section>
     <div class="article-content text-[1.08rem] leading-8 text-gray-800" set:html={article.content}></div>
   </section>
 </article>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" />
+<script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+<script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+
+<style>
+  .article-content pre {
+    background-color: #ffffff;
+    border-radius: 4px;
+    padding: 20px 24px;
+    margin: 32px 0;
+    overflow-x: auto;
+    border: 1px solid #e6e6e6;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  }
+
+  .article-content pre code {
+    font-family: 'SFMono-Regular', 'Consolas', 'Liberation Mono', monospace;
+    font-size: 14px;
+    line-height: 1.8;
+    color: #333;
+  }
+
+  .article-content code {
+    font-family: 'SFMono-Regular', 'Consolas', 'Liberation Mono', monospace;
+    font-size: 13px;
+  }
+
+  .article-content p {
+    margin-bottom: 1rem;
+  }
+
+  .article-content h1, .article-content h2, .article-content h3 {
+    font-weight: bold;
+    margin: 1.5rem 0 0.5rem;
+  }
+
+  .article-content h1 { font-size: 2rem; }
+  .article-content h2 { font-size: 1.5rem; }
+  .article-content h3 { font-size: 1.25rem; }
+
+  .article-content ul { list-style: disc; padding-left: 1.5rem; margin-bottom: 1rem; }
+  .article-content ol { list-style: decimal; padding-left: 1.5rem; margin-bottom: 1rem; }
+
+  .article-content blockquote {
+    border-left: 4px solid #e5e7eb;
+    padding-left: 1rem;
+    color: #6b7280;
+    margin: 1rem 0;
+  }
+
+  .article-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+  }
+
+  .article-content th, .article-content td {
+    border: 1px solid #e5e7eb;
+    padding: 8px 12px;
+  }
+
+  .article-content th {
+    background-color: #f9fafb;
+    font-weight: bold;
+  }
+</style>
+
+<script is:inline>
+  document.addEventListener('DOMContentLoaded', () => {
+    if (window.Prism) {
+      Prism.highlightAll();
+    }
+  });
+</script>
