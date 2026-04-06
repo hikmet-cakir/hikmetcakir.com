@@ -109,7 +109,7 @@ const hasPreviousPage = currentPage > 0;
             if (!confirm("Are you sure you want to delete this category?")) return;
 
             try {
-              const res = await fetch(`http://hikmetcakir.com/api/category/${id}`, {
+              const res = await fetch(`https://hikmetcakir.com/api/category/${id}`, {
                 method: "DELETE",
                 credentials: "include"
               });

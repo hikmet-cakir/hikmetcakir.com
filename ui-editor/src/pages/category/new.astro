@@ -43,7 +43,7 @@ const categories = await categoriesRes.json();
             const btn = document.getElementById("btnSave");
             const titleInput = document.getElementById("articleTitle"); 
             const parentCategory = document.getElementById("articleCategory"); 
-            const apiBase = "http://hikmetcakir.com/api";
+            const apiBase = "https://hikmetcakir.com/api";
 
             btn.addEventListener("click", async () => {
                 const name = titleInput.value.trim();   

@@ -59,7 +59,7 @@ services:
       - hikmetcakirblog_network
 
   uireader:
-    image: hikmetcakirdev/uireader:v60
+    image: hikmetcakirdev/uireader:v62
     container_name: uireader
     networks:
       - hikmetcakirblog_network
@@ -70,7 +70,7 @@ services:
       - NODE_ENV=production
     
   uieditor:
-    image: hikmetcakirdev/uieditor:v37
+    image: hikmetcakirdev/uieditor:v62
     container_name: uieditor
     networks:
       - hikmetcakirblog_network
@@ -96,8 +96,10 @@ services:
     container_name: nginx
     ports:
       - "80:80"
+      - "443:443"
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - /etc/letsencrypt:/etc/letsencrypt:ro
     depends_on:
       - uireader
       - coreservice
