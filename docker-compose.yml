@@ -35,7 +35,7 @@ services:
       
 
   coreservice:
-    image: hikmetcakirdev/coreapi:v28
+    image: hikmetcakirdev/coreapi:v29
     container_name: coreservice
     networks:
       - hikmetcakirblog_network
