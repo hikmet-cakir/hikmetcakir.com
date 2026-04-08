@@ -69,7 +69,11 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of(frontendReaderOrigin, frontendEditorOrigin));
+        config.setAllowedOrigins(List.of(
+                frontendReaderOrigin,
+                frontendEditorOrigin,
+                "https://www.hikmetcakir.com",
+                "https://hikmetcakir.com"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
