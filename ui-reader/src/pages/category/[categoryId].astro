@@ -18,7 +18,7 @@ const articles = data.articleSummaryList;
     {articles.length > 0 ? (
       articles.map(article => <ArticlePreview article={article} key={article.id} />)
     ) : (
-      <p class="text-gray-600 text-center py-4 col-span-full">Bu kategoriye ait makale bulunamadı.</p>
+      <p class="text-gray-600 text-center py-4 col-span-full">There are no posts in this category yet.</p>
     )}
   </div>
   <div id="scroll-sentinel" class="h-8"></div>
