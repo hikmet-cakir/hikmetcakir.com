@@ -59,7 +59,7 @@ services:
       - hikmetcakirblog_network
 
   uireader:
-    image: hikmetcakirdev/uireader:v63
+    image: hikmetcakirdev/uireader:v65
     container_name: uireader
     networks:
       - hikmetcakirblog_network
