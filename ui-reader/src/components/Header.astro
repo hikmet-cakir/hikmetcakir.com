@@ -7,9 +7,12 @@ const categories = await res.json();
 ---
 
 <header class="w-full bg-black">
-  <div class="flex justify-between items-center py-4" style="padding-left:15%; padding-right:15%;"> 
-    <div class="text-white font-bold text-xl"> 
-      <a href="/" class="hover:text-gray-300 hover:bg-gray-700 whitespace-nowrap w-full mr-2 px-2 py-2 rounded-md transition-colors duration-200">
+  <div class="flex h-14 justify-between items-center" style="padding-left:15%; padding-right:15%;">
+    <div class="flex items-center gap-1 text-white font-bold text-xl">
+      <a href="/" aria-label="Go to homepage" class="inline-flex items-center justify-center hover:text-gray-300 hover:bg-gray-700 whitespace-nowrap px-2 py-3 rounded-md transition-colors duration-200">
+        <i class="bi bi-house-fill text-white text-[18px] leading-none" aria-hidden="true" style="margin-top: 3px"></i>
+      </a>
+      <a href="/me" class="hover:text-gray-300 hover:bg-gray-700 whitespace-nowrap mr-2 px-2 py-2 rounded-md transition-colors duration-200">
         Hikmet Cakir
       </a>
     </div>
@@ -18,7 +21,7 @@ const categories = await res.json();
        {
         categories.map(root => (
           <div class="relative" key={root.id}>
-            <a href={`/category/${root.id}`} class="hover:text-gray-300 hover:bg-gray-700 whitespace-nowrap w-full mr-2 px-2 py-2 rounded-md transition-colors duration-200">
+            <a href={`/category/${root.id}`} class="hover:text-gray-300 hover:bg-gray-700 whitespace-nowrap w-full mr-2 px-2 py-1.5 rounded-md transition-colors duration-200">
               {root.name}
             </a>
 
