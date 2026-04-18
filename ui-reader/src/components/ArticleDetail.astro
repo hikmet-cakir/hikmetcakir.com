@@ -3,91 +3,250 @@ const { article } = Astro.props;
 const thumbnail = article.thumbnail || `https://picsum.photos/seed/${article.id}/1280/720`;
 ---
 
-<article class="px-[15%] py-10">
-  <header class="mb-8">
-    <h1 class="text-4xl font-extrabold tracking-tight text-gray-900 mb-3">{article.title}</h1>
-    <p class="text-gray-500 text-sm">By Hikmet Cakir</p>
+<article class="article-wrapper">
+  <header class="article-header">
+    <h1>{article.title}</h1>
+    <div class="article-meta">
+      By Hikmet Cakir
+    </div>
   </header>
 
-  <figure class="mb-8">
-    <img src={thumbnail} alt={article.title} class="w-full rounded-xl object-cover max-h-[520px]" loading="lazy" />
+  <figure class="article-thumbnail">
+    <img src={thumbnail} alt={article.title} loading="lazy" />
   </figure>
 
   <section>
-    <div class="article-content text-[1.08rem] leading-8 text-gray-800" set:html={article.content}></div>
+    <div class="article-content" set:html={article.content}></div>
   </section>
 </article>
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" />
 <script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
 <script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
 <script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
 
 <style>
-  .article-content pre {
-    background-color: #ffffff;
-    border-radius: 4px;
-    padding: 20px 24px;
-    margin: 32px 0;
-    overflow-x: auto;
-    border: 1px solid #e6e6e6;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  .article-wrapper {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem 4rem;
   }
 
-  .article-content pre code {
-    font-family: 'SFMono-Regular', 'Consolas', 'Liberation Mono', monospace;
+  .article-header {
+    margin-bottom: 2rem;
+  }
+
+  .article-header h1 {
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    font-weight: 700;
+    line-height: 1.25;
+    color: #111;
+    margin: 0 0 0.75rem;
+    letter-spacing: -0.02em;
+  }
+
+  .article-meta {
     font-size: 14px;
-    line-height: 1.8;
-    color: #333;
+    color: #6b7280;
+    display: flex;
+    align-items: center;
+    gap: 10px;
   }
 
-  .article-content code {
-    font-family: 'SFMono-Regular', 'Consolas', 'Liberation Mono', monospace;
-    font-size: 13px;
+  .article-category {
+    background: #f0effe;
+    color: #6d5bd0;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 3px 10px;
+    border-radius: 999px;
+    border: 1px solid #ddd9fc;
+  }
+
+  .article-thumbnail {
+    margin: 0 0 2.5rem;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .article-thumbnail img {
+    width: 100%;
+    max-height: 480px;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* ── Typography ── */
+  .article-content {
+    font-size: 1.0625rem;
+    line-height: 1.9;
+    color: #1a1a1a;
   }
 
   .article-content p {
-    margin-bottom: 1rem;
+    margin: 0 0 1.35rem;
   }
 
-  .article-content h1, .article-content h2, .article-content h3 {
-    font-weight: bold;
-    margin: 1.5rem 0 0.5rem;
+  .article-content h2 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin: 2.5rem 0 0.75rem;
+    color: #111;
+    border-left: 3px solid #7c70e8;
+    padding-left: 12px;
   }
 
-  .article-content h1 { font-size: 2rem; }
-  .article-content h2 { font-size: 1.5rem; }
-  .article-content h3 { font-size: 1.25rem; }
+  .article-content h3 {
+    font-size: 1.15rem;
+    font-weight: 600;
+    margin: 2rem 0 0.5rem;
+    color: #222;
+  }
 
-  .article-content ul { list-style: disc; padding-left: 1.5rem; margin-bottom: 1rem; }
-  .article-content ol { list-style: decimal; padding-left: 1.5rem; margin-bottom: 1rem; }
+  .article-content ul,
+  .article-content ol {
+    padding-left: 1.5rem;
+    margin: 0 0 1.35rem;
+  }
+
+  .article-content li {
+    margin-bottom: 0.4rem;
+    line-height: 1.8;
+  }
+
+  .article-content ul li::marker {
+    color: #7c70e8;
+  }
+
+  .article-content strong {
+    font-weight: 600;
+    color: #111;
+  }
+
+  .article-content a {
+    color: #7c70e8;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
 
   .article-content blockquote {
-    border-left: 4px solid #e5e7eb;
-    padding-left: 1rem;
-    color: #6b7280;
-    margin: 1rem 0;
+    border-left: 3px solid #7c70e8;
+    background: #f9f8ff;
+    border-radius: 0 8px 8px 0;
+    margin: 1.75rem 0;
+    padding: 1rem 1.25rem;
+    color: #555;
+    font-style: italic;
   }
 
+  .article-content blockquote p {
+    margin: 0;
+  }
+
+  /* ── Inline code ── */
+  .article-content :not(pre) > code {
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+    font-size: 0.875em;
+    background: #f0effe;
+    color: #6d5bd0;
+    border: 1px solid #ddd9fc;
+    border-radius: 4px;
+    padding: 1px 6px;
+  }
+
+  /* ── Code blocks (Quill üretir: <pre class="ql-syntax">) ── */
+  .article-content pre.ql-syntax,
+  .article-content pre[class*="language-"] {
+    background: #1e1e2e !important;
+    border-radius: 10px;
+    margin: 1.75rem 0;
+    padding: 0;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.06);
+    box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+  }
+
+  .article-content pre.ql-syntax::before,
+  .article-content pre[class*="language-"]::before {
+    content: attr(data-lang);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #16161f;
+    padding: 8px 16px;
+    font-size: 11px;
+    font-family: 'SFMono-Regular', Consolas, monospace;
+    color: rgba(255,255,255,0.3);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    /* macOS dots via box-shadow trick */
+    box-shadow: 
+      14px 0 0 0 #ff5f57,
+      28px 0 0 0 #febc2e,
+      42px 0 0 0 #28c840;
+    padding-left: 58px;
+  }
+
+  .article-content pre.ql-syntax > code,
+  .article-content pre[class*="language-"] > code {
+    display: block;
+    padding: 18px 20px;
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+    font-size: 13.5px;
+    line-height: 1.8;
+    overflow-x: auto;
+    background: transparent !important;
+    text-shadow: none !important;
+  }
+
+  /* Prism token renk düzeltmeleri (prism-tomorrow üzerine) */
+  .article-content .token.keyword { color: #cba6f7; }
+  .article-content .token.class-name { color: #89dceb; }
+  .article-content .token.string { color: #a6e3a1; }
+  .article-content .token.comment { color: #6c7086; font-style: italic; }
+  .article-content .token.number { color: #fab387; }
+  .article-content .token.operator { color: #89dceb; }
+  .article-content .token.punctuation { color: #cdd6f4; }
+
+  /* ── Tables ── */
   .article-content table {
     width: 100%;
     border-collapse: collapse;
-    margin: 1rem 0;
+    margin: 1.5rem 0;
+    font-size: 15px;
   }
 
-  .article-content th, .article-content td {
+  .article-content th,
+  .article-content td {
     border: 1px solid #e5e7eb;
-    padding: 8px 12px;
+    padding: 10px 14px;
+    text-align: left;
   }
 
   .article-content th {
-    background-color: #f9fafb;
-    font-weight: bold;
+    background: #f9fafb;
+    font-weight: 600;
+    color: #374151;
   }
 </style>
 
 <script is:inline>
   document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('pre.ql-syntax').forEach(pre => {
+      const text = pre.textContent || '';
+      const lang = text.includes('public class') || text.includes('void ') ? 'java' : 'javascript';
+      
+      pre.setAttribute('data-lang', lang.toUpperCase());
+      
+      let code = pre.querySelector('code');
+      if (!code) {
+        code = document.createElement('code');
+        code.textContent = pre.textContent;
+        pre.textContent = '';
+        pre.appendChild(code);
+      }
+      code.className = `language-${lang}`;
+    });
+
     if (window.Prism) {
       Prism.highlightAll();
     }
