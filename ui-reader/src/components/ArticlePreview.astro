@@ -1,37 +1,139 @@
 ---
-const { article } = Astro.props;
+const { article, variant = "small" } = Astro.props;
+const thumbnail = article.thumbnail || `https://picsum.photos/seed/${article.id}/800/500`;
+const isFeatured = variant === "featured";
 
-function stripHtml(html) {
-  if (!html) return "";
-  return html.replace(/<[^>]*>/g, "");
-}
+const plainText = article.content ? article.content.replace(/<[^>]*>/g, '') : '';
+const excerpt = plainText.slice(0, 240) + (plainText.length > 240 ? '...' : '');
+const wordCount = plainText.split(/\s+/).filter(Boolean).length;
+const readTime = Math.max(1, Math.round(wordCount / 200));
 
-function truncate(text, maxLength = 180) {
-  if (!text) return "";
-  const clean = stripHtml(text);
-  return clean.length > maxLength ? clean.substring(0, maxLength) + "..." : clean;
-}
- 
-const thumbnail = article.thumbnail || `https://picsum.photos/seed/${article.id}/600/400`;
+const categoryColors = {
+  'Java':            { bg: '#fff3e0', text: '#e65100', border: '#ffcc80' },
+  'Spring Boot':     { bg: '#e8f5e9', text: '#2e7d32', border: '#a5d6a7' },
+  'Kafka':           { bg: '#fce4ec', text: '#c62828', border: '#f48fb1' },
+  'DSA':             { bg: '#e3f2fd', text: '#1565c0', border: '#90caf9' },
+  'Design Patterns': { bg: '#f0effe', text: '#6d5bd0', border: '#ddd9fc' },
+};
+
+const color = categoryColors[article.categoryName] || { bg: '#f3f4f6', text: '#374151', border: '#e5e7eb' };
 ---
-<article class="bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden w-full h-full flex flex-col">
- 
-  <div class="w-full h-56 overflow-hidden">
-    <img src={thumbnail} alt={article.title} class="w-full h-full object-cover hover:scale-105 transition-transform duration-500" loading="lazy"/>
-  </div>
 
-  <div class="p-6 flex flex-col flex-1">
-    <div>
-      <h2 class="text-2xl font-semibold mb-3 text-gray-900 line-clamp-2">{article.title}</h2>
-      <p class="text-gray-700 leading-relaxed mb-6">
-        {truncate(article.content)}
-      </p>
-    </div>
- 
-    <div class="mt-auto flex justify-end">
-      <a href={`/article/${article.id}`}   class="px-5 py-2 border border-black text-black rounded-full hover:bg-black hover:text-white transition-colors duration-300">
-        Read More
-      </a>
-    </div>
+<a href={`/article/${article.id}`} class:list={["article-card", variant]}>
+  <div class="card-img">
+    <img src={thumbnail} alt={article.title} loading="lazy" />
   </div>
-</article>
+  <div class="card-info">
+    {article.categoryName && !article.hideCategory && (
+      <span class="category" style={`background:${color.bg}; color:${color.text}; border-color:${color.border};`}>
+        {article.categoryName}
+      </span>
+    )}
+    <h2 class="card-title">{article.title}</h2>
+    {isFeatured && excerpt && (
+      <p class="excerpt">{excerpt}</p>
+    )}
+    <span class="meta">{readTime} min read</span>
+  </div>
+</a>
+
+<style>
+  .article-card {
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    border: 0.5px solid #e5e7eb;
+    border-radius: 12px;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.15s, transform 0.15s;
+    height: 100%;
+  }
+
+  .article-card:hover {
+    border-color: #c4c0f8;
+    transform: translateY(-2px);
+  }
+
+  .card-img {
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  .card-img img {
+    width: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.3s ease;
+  }
+
+  .article-card:hover .card-img img {
+    transform: scale(1.03);
+  }
+
+  .featured .card-img img {
+    height: 380px;
+  }
+
+  .small .card-img img {
+    height: 160px;
+  }
+
+  .card-info {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1;
+  }
+
+  .featured .card-info {
+    padding: 20px;
+    gap: 8px;
+  }
+
+  .category {
+    font-size: 11px;
+    font-weight: 600;
+    border: 0.5px solid;
+    border-radius: 999px;
+    padding: 2px 9px;
+    width: fit-content;
+    letter-spacing: 0.03em;
+  }
+
+  .card-title {
+    font-weight: 700;
+    color: #111;
+    line-height: 1.35;
+    margin: 0;
+  }
+
+  .featured .card-title {
+    font-size: 1.25rem;
+  }
+
+  .small .card-title {
+    font-size: 0.95rem;
+  }
+
+  .excerpt {
+    font-size: 0.875rem;
+    color: #6b7280;
+    line-height: 1.6;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .meta {
+    font-size: 12px;
+    color: #9ca3af;
+    margin-top: auto;
+    padding-top: 8px;
+    border-top: 0.5px solid #f3f4f6;
+  }
+</style>

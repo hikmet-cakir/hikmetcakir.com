@@ -1,49 +1,85 @@
 export function initInfiniteScroll() {
-    const $ = (s) => document.querySelector(s);
-    const grid = $('#articles-grid');
-    const sentinel = $('#scroll-sentinel');
-    const loader = $('#loader');
-    const retry = $('#retry');
-    if (grid && sentinel && loader && retry) {
+  const $ = (s) => document.querySelector(s);
+  const wrapper = document.querySelector('.blog-wrapper');
+  const sentinel = $('#scroll-sentinel');
+  const loader = $('#loader');
+  const retry = $('#retry');
+
+  if (wrapper && sentinel && loader && retry) {
     let page = 1, busy = false, more = true;
-    const size = Number(grid.dataset.pageSize || '12');
-    const base = grid.dataset.apiBase || '';
-    const categoryId = grid.dataset.categoryId || '';
+    const size = Number(wrapper.dataset.pageSize || '12');
+    const base = wrapper.dataset.apiBase || '';
+    const categoryId = wrapper.dataset.categoryId || '';
+
     const show = (el, v) => el.classList.toggle('hidden', !v);
-    const trunc = (t, n = 180) => t ? (t.length > n ? t.slice(0, n) + '...' : t) : '';
+
+    const categoryColors = {
+      'Java':            { bg: '#fff3e0', text: '#e65100', border: '#ffcc80' },
+      'Spring Boot':     { bg: '#e8f5e9', text: '#2e7d32', border: '#a5d6a7' },
+      'Kafka':           { bg: '#fce4ec', text: '#c62828', border: '#f48fb1' },
+      'DSA':             { bg: '#e3f2fd', text: '#1565c0', border: '#90caf9' },
+      'Design Patterns': { bg: '#f0effe', text: '#6d5bd0', border: '#ddd9fc' },
+    };
+
     const card = (a) => {
-      const el = document.createElement('article');
-      el.className = 'bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden w-full h-full flex flex-col';
+      const el = document.createElement('a');
+      el.href = `/article/${a.id}`;
+      el.className = 'article-card small';
+
+      const thumb = a.thumbnail || `https://picsum.photos/seed/${a.id}/800/500`;
+      const plainText = a.content ? a.content.replace(/<[^>]*>/g, '') : '';
+      const wordCount = plainText.split(/\s+/).filter(Boolean).length;
+      const readTime = Math.max(1, Math.round(wordCount / 200));
+      const color = categoryColors[a.categoryName] || { bg: '#f3f4f6', text: '#374151', border: '#e5e7eb' };
+
       el.innerHTML = `
-        <div class="w-full h-56 overflow-hidden">
-          <img src="${a.thumbnail || `https://picsum.photos/seed/${a.id}/600/400`}" alt="${a.title}" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500" loading="lazy" />
+        <div class="card-img">
+          <img src="${thumb}" alt="${a.title}" loading="lazy" />
         </div>
-        <div class="p-6 flex flex-col flex-1">
-          <div>
-            <h2 class="text-2xl font-semibold mb-3 text-gray-900 line-clamp-2">${a.title}</h2>
-            <p class="text-gray-700 leading-relaxed mb-6">${trunc(a.content)}</p>
-          </div>
-          <div class="mt-auto flex justify-end">
-            <a href="/article/${a.id}" class="px-5 py-2 border border-black text-black rounded-full hover:bg-black hover:text-white transition-colors duration-300">Read More</a>
-          </div>
+        <div class="card-info">
+          ${a.categoryName ? `<span class="category" style="background:${color.bg}; color:${color.text}; border-color:${color.border};">${a.categoryName}</span>` : ''}
+          <h2 class="card-title">${a.title}</h2>
+          <span class="meta">${readTime} min read</span>
         </div>`;
       return el;
     };
+
     const load = async () => {
-      if (busy || !more) return; busy = true; show(loader, true); show(retry, false);
+      if (busy || !more) return;
+      busy = true;
+      show(loader, true);
+      show(retry, false);
       try {
         const r = await fetch(`${base}/article?size=${size}&page=${page}&categoryId=${categoryId}`);
         const { articleSummaryList: list = [] } = await r.json();
-        list.forEach((a) => grid.appendChild(card(a)));
-        more = list.length === size; page += more ? 1 : 0; if (!more) obs.disconnect();
+
+        let extraGrid = document.getElementById('extra-grid');
+        if (!extraGrid) {
+          extraGrid = document.createElement('div');
+          extraGrid.id = 'extra-grid';
+          extraGrid.style.cssText = 'display:grid; grid-template-columns:repeat(3,1fr); gap:20px; margin-top:20px;';
+          document.getElementById('articles-grid')?.appendChild(extraGrid);
+        }
+
+        list.forEach((a) => extraGrid.appendChild(card(a)));
+        more = list.length === size;
+        page += more ? 1 : 0;
+        if (!more) obs.disconnect();
       } catch (e) {
-        console.error(e); show(retry, true);
+        console.error(e);
+        show(retry, true);
       } finally {
-        busy = false; show(loader, false);
+        busy = false;
+        show(loader, false);
       }
     };
+
     retry.querySelector('button').addEventListener('click', load);
-    const obs = new IntersectionObserver((es) => es.some((e) => e.isIntersecting) && load(), { rootMargin: '200px 0px' });
+
+    const obs = new IntersectionObserver(
+      (es) => es.some((e) => e.isIntersecting) && load(),
+      { rootMargin: '200px 0px' }
+    );
     obs.observe(sentinel);
-    }
+  }
 }
