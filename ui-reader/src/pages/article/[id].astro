@@ -32,6 +32,6 @@ try {
 }
 ---
 
-<Layout title={article?.title || 'Article Not Found'}>
+<Layout title={article?.title ? `${article.title} — Hikmet Cakir` : 'Article Not Found'}>
   <ArticleDetail article={article} isPreview={false} />
 </Layout>
