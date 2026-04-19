@@ -5,7 +5,7 @@ const thumbnail = article.thumbnail || `https://picsum.photos/seed/${article.id}
 
 <article class="article-wrapper">
   <header class="article-header">
-    <h1>{article.title}</h1> 
+    <h1>{article.title}</h1>
   </header>
 
   <figure class="article-thumbnail">
@@ -24,9 +24,7 @@ const thumbnail = article.thumbnail || `https://picsum.photos/seed/${article.id}
 
 <style>
   .article-wrapper {
-    max-width: 780px;
-    margin: 0 auto;
-    padding: 2.5rem 1.5rem 4rem;
+    padding: 2.5rem 15% 4rem;
   }
 
   .article-header {
@@ -151,7 +149,7 @@ const thumbnail = article.thumbnail || `https://picsum.photos/seed/${article.id}
     padding: 1px 6px;
   }
 
-  /* ── Code blocks (Quill üretir: <pre class="ql-syntax">) ── */
+  /* ── Code blocks ── */
   .article-content pre.ql-syntax,
   .article-content pre[class*="language-"] {
     background: #1e1e2e !important;
@@ -168,15 +166,13 @@ const thumbnail = article.thumbnail || `https://picsum.photos/seed/${article.id}
     content: attr(data-lang);
     display: flex;
     align-items: center;
-    gap: 8px;
     background: #16161f;
     padding: 8px 16px;
     font-size: 11px;
     font-family: 'SFMono-Regular', Consolas, monospace;
     color: rgba(255,255,255,0.3);
     border-bottom: 1px solid rgba(255,255,255,0.06);
-    /* macOS dots via box-shadow trick */
-    box-shadow: 
+    box-shadow:
       14px 0 0 0 #ff5f57,
       28px 0 0 0 #febc2e,
       42px 0 0 0 #28c840;
@@ -195,7 +191,6 @@ const thumbnail = article.thumbnail || `https://picsum.photos/seed/${article.id}
     text-shadow: none !important;
   }
 
-  /* Prism token renk düzeltmeleri (prism-tomorrow üzerine) */
   .article-content .token.keyword { color: #cba6f7; }
   .article-content .token.class-name { color: #89dceb; }
   .article-content .token.string { color: #a6e3a1; }
@@ -224,6 +219,39 @@ const thumbnail = article.thumbnail || `https://picsum.photos/seed/${article.id}
     font-weight: 600;
     color: #374151;
   }
+
+  /* ── Responsive ── */
+  @media (max-width: 1024px) {
+    .article-wrapper {
+      padding: 2.5rem 5% 4rem;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .article-wrapper {
+      padding: 1.5rem 4% 3rem;
+    }
+
+    .article-header h1 {
+      font-size: 1.5rem;
+    }
+
+    .article-content {
+      font-size: 1rem;
+    }
+
+    .article-content pre.ql-syntax > code,
+    .article-content pre[class*="language-"] > code {
+      font-size: 12px;
+      padding: 14px 16px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .article-wrapper {
+      padding: 1rem 4% 2rem;
+    }
+  }
 </style>
 
 <script is:inline>
@@ -231,9 +259,9 @@ const thumbnail = article.thumbnail || `https://picsum.photos/seed/${article.id}
     document.querySelectorAll('pre.ql-syntax').forEach(pre => {
       const text = pre.textContent || '';
       const lang = text.includes('public class') || text.includes('void ') ? 'java' : 'javascript';
-      
+
       pre.setAttribute('data-lang', lang.toUpperCase());
-      
+
       let code = pre.querySelector('code');
       if (!code) {
         code = document.createElement('code');
