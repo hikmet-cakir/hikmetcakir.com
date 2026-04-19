@@ -144,12 +144,22 @@ const hasSingleSmall = articles.length === 2;
 
   @media (max-width: 560px) {
     .blog-wrapper {
-      padding: 1.5rem 4%;
+      padding: 1.5rem 16px 2rem;
+      overflow-x: hidden;
+    }
+    .group-block {
+      grid-template-columns: 1fr;
     }
     .small-pair {
       flex-direction: column;
     }
     #extra-grid {
+      grid-template-columns: 1fr;
+    }
+    .duo-grid {
+      grid-template-columns: 1fr;
+    }
+    .solo-grid {
       grid-template-columns: 1fr;
     }
   }

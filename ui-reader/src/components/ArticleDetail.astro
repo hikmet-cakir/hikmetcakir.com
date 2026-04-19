@@ -71,7 +71,6 @@ const thumbnail = article.thumbnail || `https://picsum.photos/seed/${article.id}
     display: block;
   }
 
-  /* ── Typography ── */
   .article-content {
     font-size: 1.0625rem;
     line-height: 1.9;
@@ -138,7 +137,6 @@ const thumbnail = article.thumbnail || `https://picsum.photos/seed/${article.id}
     margin: 0;
   }
 
-  /* ── Inline code ── */
   .article-content :not(pre) > code {
     font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
     font-size: 0.875em;
@@ -149,7 +147,6 @@ const thumbnail = article.thumbnail || `https://picsum.photos/seed/${article.id}
     padding: 1px 6px;
   }
 
-  /* ── Code blocks ── */
   .article-content pre.ql-syntax,
   .article-content pre[class*="language-"] {
     background: #1e1e2e !important;
@@ -199,7 +196,6 @@ const thumbnail = article.thumbnail || `https://picsum.photos/seed/${article.id}
   .article-content .token.operator { color: #89dceb; }
   .article-content .token.punctuation { color: #cdd6f4; }
 
-  /* ── Tables ── */
   .article-content table {
     width: 100%;
     border-collapse: collapse;
@@ -220,7 +216,6 @@ const thumbnail = article.thumbnail || `https://picsum.photos/seed/${article.id}
     color: #374151;
   }
 
-  /* ── Responsive ── */
   @media (max-width: 1024px) {
     .article-wrapper {
       padding: 2.5rem 5% 4rem;
@@ -231,15 +226,12 @@ const thumbnail = article.thumbnail || `https://picsum.photos/seed/${article.id}
     .article-wrapper {
       padding: 1.5rem 4% 3rem;
     }
-
     .article-header h1 {
       font-size: 1.5rem;
     }
-
     .article-content {
       font-size: 1rem;
     }
-
     .article-content pre.ql-syntax > code,
     .article-content pre[class*="language-"] > code {
       font-size: 12px;
@@ -247,9 +239,20 @@ const thumbnail = article.thumbnail || `https://picsum.photos/seed/${article.id}
     }
   }
 
-  @media (max-width: 480px) {
+  @media (max-width: 560px) {
     .article-wrapper {
-      padding: 1rem 4% 2rem;
+      padding: 1rem 16px 2rem;
+    }
+    .article-header h1 {
+      font-size: 1.3rem;
+    }
+    .article-content {
+      font-size: 0.95rem;
+    }
+    .article-content pre.ql-syntax > code,
+    .article-content pre[class*="language-"] > code {
+      font-size: 11px;
+      padding: 12px 14px;
     }
   }
 </style>
