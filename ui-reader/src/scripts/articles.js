@@ -9,6 +9,7 @@ export function initInfiniteScroll() {
     let page = 1, busy = false, more = true;
     const size = Number(wrapper.dataset.pageSize || '12');
     const base = wrapper.dataset.apiBase || '';
+    const catMap = JSON.parse(wrapper.dataset.catMap || '{}');
 
     const show = (el, v) => el.classList.toggle('hidden', !v);
 
@@ -29,14 +30,15 @@ export function initInfiniteScroll() {
       const plainText = a.content ? a.content.replace(/<[^>]*>/g, '') : '';
       const wordCount = plainText.split(/\s+/).filter(Boolean).length;
       const readTime = Math.max(1, Math.round(wordCount / 200));
-      const color = categoryColors[a.categoryName] || { bg: '#f3f4f6', text: '#374151', border: '#e5e7eb' };
+      const categoryName = catMap[a.categoryId] || a.categoryName || '';
+      const color = categoryColors[categoryName] || { bg: '#f3f4f6', text: '#374151', border: '#e5e7eb' };
 
       el.innerHTML = `
         <div class="card-img">
           <img src="${thumb}" alt="${a.title}" loading="lazy" />
         </div>
         <div class="card-info">
-          ${a.categoryName ? `<span class="category" style="background:${color.bg}; color:${color.text}; border-color:${color.border};">${a.categoryName}</span>` : ''}
+          ${categoryName ? `<span class="category" style="background:${color.bg}; color:${color.text}; border-color:${color.border};">${categoryName}</span>` : ''}
           <h2 class="card-title">${a.title}</h2>
           <span class="meta">${readTime} min read</span>
         </div>`;
@@ -56,7 +58,7 @@ export function initInfiniteScroll() {
         if (!extraGrid) {
           extraGrid = document.createElement('div');
           extraGrid.id = 'extra-grid';
-          extraGrid.style.cssText = 'display:grid; grid-template-columns:repeat(3,1fr); gap:20px; margin-top:20px;';
+          extraGrid.style.cssText = 'display:grid; grid-template-columns:repeat(auto-fill, minmax(380px, 1fr)); gap:20px; margin-top:20px;';
           document.getElementById('articles-grid')?.appendChild(extraGrid);
         }
 

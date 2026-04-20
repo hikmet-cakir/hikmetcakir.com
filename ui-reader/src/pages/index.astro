@@ -26,7 +26,10 @@ const hasSingleSmall = articles.length === 2;
 ---
 
 <Layout title="Hikmet Cakir: Home">
-  <div class="blog-wrapper" data-api-base={import.meta.env.CLIENT_PUBLIC_API_BASE} data-page-size={PAGE_SIZE}>
+  <div class="blog-wrapper"
+    data-api-base={import.meta.env.CLIENT_PUBLIC_API_BASE}
+    data-page-size={PAGE_SIZE}
+    data-cat-map={JSON.stringify(catMap)}>
 
     {articles.length === 0 ? (
       <p class="empty">No posts yet.</p>
@@ -114,7 +117,7 @@ const hasSingleSmall = articles.length === 2;
 
   #extra-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
     gap: 20px;
   }
 
@@ -134,9 +137,6 @@ const hasSingleSmall = articles.length === 2;
     .small-pair {
       flex-direction: row;
     }
-    #extra-grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
     .duo-grid {
       grid-template-columns: 1fr;
     }
@@ -154,7 +154,7 @@ const hasSingleSmall = articles.length === 2;
       flex-direction: column;
     }
     #extra-grid {
-      grid-template-columns: 1fr;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     }
     .duo-grid {
       grid-template-columns: 1fr;

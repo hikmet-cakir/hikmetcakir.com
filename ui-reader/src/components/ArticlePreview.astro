@@ -24,7 +24,7 @@ const color = categoryColors[article.categoryName] || { bg: '#f3f4f6', text: '#3
     <img src={thumbnail} alt={article.title} loading="lazy" />
   </div>
   <div class="card-info">
-    {article.categoryName && !article.hideCategory && (
+    {!article.hideCategory && article.categoryName && (
       <span class="category" style={`background:${color.bg}; color:${color.text}; border-color:${color.border};`}>
         {article.categoryName}
       </span>
@@ -37,7 +37,7 @@ const color = categoryColors[article.categoryName] || { bg: '#f3f4f6', text: '#3
   </div>
 </a>
 
-<style>
+<style is:global>
   .article-card {
     display: flex;
     flex-direction: column;
