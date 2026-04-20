@@ -11,7 +11,7 @@ const API_BASE = import.meta.env.PUBLIC_API_BASE;
 const [articleRes, catRes] = await Promise.all([
   fetch(`${API_BASE}/article?size=${PAGE_SIZE}&page=0&categoryId=${categoryId}`),
   fetch(`${API_BASE}/category`)
-]);
+]); 
 
 const data = await articleRes.json();
 const categories = await catRes.json();
