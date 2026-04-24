@@ -25,6 +25,7 @@ const thumbnail = article.thumbnail || `https://picsum.photos/seed/${article.id}
 <style>
   .article-wrapper {
     padding: 2.5rem 15% 4rem;
+    overflow-x: hidden;
   }
 
   .article-header {
@@ -75,6 +76,7 @@ const thumbnail = article.thumbnail || `https://picsum.photos/seed/${article.id}
     font-size: 1.0625rem;
     line-height: 1.9;
     color: #1a1a1a;
+    overflow-x: hidden;
   }
 
   .article-content p {
@@ -153,7 +155,9 @@ const thumbnail = article.thumbnail || `https://picsum.photos/seed/${article.id}
     border-radius: 10px;
     margin: 1.75rem 0;
     padding: 0;
-    overflow: hidden;
+    overflow-x: auto;
+    overflow-y: hidden;
+    max-width: 100%;
     border: 1px solid rgba(255,255,255,0.06);
     box-shadow: 0 4px 24px rgba(0,0,0,0.12);
   }
@@ -201,6 +205,17 @@ const thumbnail = article.thumbnail || `https://picsum.photos/seed/${article.id}
     border-collapse: collapse;
     margin: 1.5rem 0;
     font-size: 15px;
+    display: block;
+    overflow-x: auto;
+  }
+
+  .article-content pre {
+    max-width: 100%;
+  }
+
+  .article-content img {
+    max-width: 100%;
+    height: auto;
   }
 
   .article-content th,
