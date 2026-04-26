@@ -4,36 +4,40 @@ const thumbnail = article.thumbnail || `https://picsum.photos/seed/${article.id}
 const isFeatured = variant === "featured";
 
 const plainText = article.content ? article.content.replace(/<[^>]*>/g, '') : '';
-const excerpt = plainText.slice(0, 240) + (plainText.length > 240 ? '...' : '');
 const wordCount = plainText.split(/\s+/).filter(Boolean).length;
 const readTime = Math.max(1, Math.round(wordCount / 200));
 
+const formattedDate = article.created
+  ? new Date(article.created).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
+  : '';
+
+const metaStr = [formattedDate, `${readTime} min read`].filter(Boolean).join(' · ');
+
 const categoryColors = {
-  'Java':            { bg: '#fff3e0', text: '#e65100', border: '#ffcc80' },
-  'Spring Boot':     { bg: '#e8f5e9', text: '#2e7d32', border: '#a5d6a7' },
-  'Kafka':           { bg: '#fce4ec', text: '#c62828', border: '#f48fb1' },
-  'DSA':             { bg: '#e3f2fd', text: '#1565c0', border: '#90caf9' },
-  'Design Patterns': { bg: '#f0effe', text: '#6d5bd0', border: '#ddd9fc' },
+  'Java':            { bg: 'rgba(255,243,224,0.92)', text: '#e65100', border: 'rgba(255,204,128,0.6)' },
+  'Spring Boot':     { bg: 'rgba(232,245,233,0.92)', text: '#2e7d32', border: 'rgba(165,214,167,0.6)' },
+  'Kafka':           { bg: 'rgba(252,228,236,0.92)', text: '#c62828', border: 'rgba(244,143,177,0.6)' },
+  'DSA':             { bg: 'rgba(227,242,253,0.92)', text: '#1565c0', border: 'rgba(144,202,249,0.6)' },
+  'Design Patterns': { bg: 'rgba(240,239,254,0.92)', text: '#6d5bd0', border: 'rgba(221,217,252,0.6)' },
 };
 
-const color = categoryColors[article.categoryName] || { bg: '#f3f4f6', text: '#374151', border: '#e5e7eb' };
+const color = categoryColors[article.categoryName] || { bg: 'rgba(243,244,246,0.92)', text: '#374151', border: 'rgba(229,231,235,0.6)' };
 ---
 
 <a href={`/article/${article.id}`} class:list={["article-card", variant]}>
-  <div class="card-img">
-    <img src={thumbnail} alt={article.title} loading="lazy" />
-  </div>
-  <div class="card-info">
+  <div class="card-img-wrap">
+    <img src={thumbnail} alt={article.title} loading="lazy" class="card-img" />
+
     {!article.hideCategory && article.categoryName && (
-      <span class="category" style={`background:${color.bg}; color:${color.text}; border-color:${color.border};`}>
+      <span class="card-badge" style={`background:${color.bg}; color:${color.text}; border-color:${color.border};`}>
         {article.categoryName}
       </span>
     )}
-    <h2 class="card-title">{article.title}</h2>
-    {isFeatured && excerpt && (
-      <p class="excerpt">{excerpt}</p>
-    )}
-    <span class="meta">{readTime} min read</span>
+
+    <div class="card-overlay">
+      <h2 class="card-title">{article.title}</h2>
+      <p class="card-meta">{metaStr}</p>
+    </div>
   </div>
 </a>
 
@@ -41,99 +45,146 @@ const color = categoryColors[article.categoryName] || { bg: '#f3f4f6', text: '#3
   .article-card {
     display: flex;
     flex-direction: column;
-    background: #fff;
-    border: 0.5px solid #e5e7eb;
-    border-radius: 12px;
+    border-radius: 14px;
     overflow: hidden;
     text-decoration: none;
     color: inherit;
-    transition: border-color 0.15s, transform 0.15s;
     height: 100%;
+    border: 0.5px solid #e5e7eb;
+    background: #fff;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
   }
 
   .article-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 36px rgba(0,0,0,0.10);
     border-color: #c4c0f8;
-    transform: translateY(-2px);
   }
 
-  .card-img {
+  /* ── Image wrap ── */
+  .card-img-wrap {
+    position: relative;
     overflow: hidden;
-    flex-shrink: 0;
-  }
-
-  .card-img img {
-    width: 100%;
-    object-fit: cover;
-    display: block;
-    transition: transform 0.3s ease;
-  }
-
-  .article-card:hover .card-img img {
-    transform: scale(1.03);
-  }
-
-  .featured .card-img img {
-    height: 380px;
-  }
-
-  .small .card-img img {
-    height: 160px;
-  }
-
-  .card-info {
-    padding: 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
     flex: 1;
   }
 
-  .featured .card-info {
-    padding: 20px;
-    gap: 8px;
+  .card-img {
+    width: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.2s ease;
   }
 
-  .category {
+  .article-card:hover .card-img {
+    transform: scale(1.03);
+  }
+
+  .featured .card-img {
+    height: 420px;
+  }
+
+  .small .card-img {
+    height: 220px;
+  }
+
+  /* ── Badge ── */
+  .card-badge {
+    position: absolute;
+    top: 14px;
+    left: 14px;
     font-size: 11px;
     font-weight: 600;
+    letter-spacing: 0.03em;
     border: 0.5px solid;
     border-radius: 999px;
-    padding: 2px 9px;
-    width: fit-content;
-    letter-spacing: 0.03em;
+    padding: 3px 10px;
+    backdrop-filter: blur(6px);
+    z-index: 2;
   }
 
+  /* ── Overlay ── */
+  .card-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    transition: background 0.2s ease;
+  }
+
+  .featured .card-overlay {
+    padding: 24px;
+    gap: 6px;
+    background: linear-gradient(
+      to top,
+      rgba(0,0,0,0.58) 0%,
+      rgba(0,0,0,0.28) 55%,
+      transparent 100%
+    );
+  }
+
+  .small .card-overlay {
+    padding: 16px;
+    gap: 4px;
+    background: linear-gradient(
+      to top,
+      rgba(0,0,0,0.42) 0%,
+      rgba(0,0,0,0.18) 55%,
+      transparent 100%
+    );
+  }
+
+  .article-card:hover .featured .card-overlay {
+    background: linear-gradient(
+      to top,
+      rgba(0,0,0,0.65) 0%,
+      rgba(0,0,0,0.32) 55%,
+      transparent 100%
+    );
+  }
+
+  .article-card:hover .small .card-overlay {
+    background: linear-gradient(
+      to top,
+      rgba(0,0,0,0.52) 0%,
+      rgba(0,0,0,0.22) 55%,
+      transparent 100%
+    );
+  }
+
+  /* ── Title ── */
   .card-title {
-    font-weight: 700;
-    color: #111;
+    color: #fff;
     line-height: 1.35;
     margin: 0;
+    letter-spacing: -0.01em;
   }
 
   .featured .card-title {
-    font-size: 1.25rem;
+    font-size: 1.2rem;
+    font-weight: 600;
   }
 
   .small .card-title {
     font-size: 0.95rem;
+    font-weight: 500;
   }
 
-  .excerpt {
-    font-size: 0.875rem;
-    color: #6b7280;
-    line-height: 1.6;
+  /* ── Meta ── */
+  .card-meta {
     margin: 0;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
+    letter-spacing: 0.01em;
   }
 
-  .meta {
+  .featured .card-meta {
     font-size: 12px;
-    color: #9ca3af;
-    margin-top: auto;
-    padding-top: 8px;
-    border-top: 0.5px solid #f3f4f6;
+    color: rgba(255,255,255,0.80);
+  }
+
+  .small .card-meta {
+    font-size: 11px;
+    color: rgba(255,255,255,0.75);
   }
 </style>
