@@ -1,4 +1,4 @@
-name: AI Dev Bot
+name: AI Issue Bot (Groq)
 
 on:
   issues:
@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: Checkout repo
         uses: actions/checkout@v4
 
       - name: Setup Node
@@ -18,12 +18,11 @@ jobs:
           node-version: 20
 
       - name: Install deps
-        run: npm install openai simple-git
+        run: npm install simple-git node-fetch
 
-      - name: Run AI agent
+      - name: Run AI
         run: node scripts/ai.js
         env:
           ISSUE_TITLE: ${{ github.event.issue.title }}
           ISSUE_BODY: ${{ github.event.issue.body }}
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
