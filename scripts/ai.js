@@ -54,3 +54,17 @@ Return ONLY code.
 }
 
 run();
+
+await fetch(`https://api.github.com/repos/${process.env.GITHUB_REPOSITORY}/pulls`, {
+  method: "POST",
+  headers: {
+    "Authorization": `Bearer ${process.env.GITHUB_TOKEN}`,
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    title: `AI: ${issueTitle}`,
+    head: branchName,
+    base: "main",
+    body: issueBody
+  })
+});
