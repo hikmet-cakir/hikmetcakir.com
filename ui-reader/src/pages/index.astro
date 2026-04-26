@@ -73,8 +73,9 @@ const hasSingleSmall = articles.length === 2;
     </div>
   </div>
 
-  <script is:inline>
-    import('/src/scripts/articles.js').then(m => m.initInfiniteScroll());
+  <script>
+    import { initInfiniteScroll } from '../scripts/articles.js';
+    initInfiniteScroll();
   </script>
 </Layout>
 
