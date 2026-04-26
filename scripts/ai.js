@@ -1,63 +1,56 @@
-const OpenAI = require("openai");
-const simpleGit = require("simple-git");
 const fs = require("fs");
-const { execSync } = require("child_process");
-
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+const simpleGit = require("simple-git");
 
 const issueTitle = process.env.ISSUE_TITLE;
 const issueBody = process.env.ISSUE_BODY;
+const apiKey = process.env.GROQ_API_KEY;
 
 const branchName = `ai/${issueTitle.toLowerCase().replace(/\s/g, "-")}`;
 
 async function run() {
-  // 1. AI prompt
-  const response = await openai.chat.completions.create({
-    model: "gpt-4o-mini",
-    messages: [
-      {
-        role: "system",
-        content: "You are a senior software engineer. Output ONLY code files."
-      },
-      {
-        role: "user",
-        content: `Create code for this issue:
+  const prompt = `
+You are a senior software engineer.
+
+Create production-ready code for this GitHub issue:
 
 TITLE: ${issueTitle}
-DESCRIPTION: ${issueBody}`
-      }
-    ]
+DESCRIPTION: ${issueBody}
+
+Return ONLY code.
+`;
+
+  // 1. Groq API call
+  const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Authorization": `Bearer ${apiKey}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      model: "llama-3.1-70b-versatile",
+      messages: [
+        { role: "user", content: prompt }
+      ],
+      temperature: 0.2
+    })
   });
 
-  const code = response.choices[0].message.content;
+  const data = await response.json();
+  const code = data.choices[0].message.content;
 
-  // 2. write file
   fs.writeFileSync("ai-output.txt", code);
 
+  // 2. Git operations
   const git = simpleGit();
 
-  // 3. create branch
   await git.checkoutLocalBranch(branchName);
 
-  // 4. commit
   await git.add(".");
-  await git.commit("AI generated code");
+  await git.commit("AI generated code (Groq)");
 
-  // 5. push branch
   await git.push("origin", branchName);
 
-  // 6. create PR via GitHub CLI
-  execSync(`
-    gh pr create \
-    --title "AI: ${issueTitle}" \
-    --body "Auto-generated PR from issue: ${issueBody}" \
-    --head ${branchName} \
-    --base main
-  `);
-
-  console.log("PR created!");
+  console.log("Branch pushed:", branchName);
 }
 
 run();
