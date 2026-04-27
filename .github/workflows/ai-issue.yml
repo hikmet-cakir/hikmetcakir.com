@@ -105,6 +105,12 @@ jobs:
             req.end();
           });
 
+          console.log('Gemini response:', JSON.stringify(geminiResponse, null, 2));
+          
+          if (!geminiResponse.candidates || !geminiResponse.candidates[0]) {
+            throw new Error(`Gemini API error: ${JSON.stringify(geminiResponse)}`);
+          }
+          
           const rawText = geminiResponse.candidates[0].content.parts[0].text;
           const jsonMatch = rawText.match(/\{[\s\S]*\}/);
           if (!jsonMatch) throw new Error('No JSON found in Gemini response');
