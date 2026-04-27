@@ -1,0 +1,175 @@
+name: AI Issue Handler
+
+on:
+  issues:
+    types: [opened, assigned]
+
+jobs:
+  handle-issue:
+    runs-on: ubuntu-latest
+    if: github.event.action == 'opened' || github.event.action == 'assigned'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Process issue with Gemini and create PR
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          REPO: ${{ github.repository }}
+        run: |
+          cat << 'EOF' > process_issue.mjs
+          import { execSync } from 'child_process';
+          import https from 'https';
+
+          const issueNumber = process.env.ISSUE_NUMBER;
+          const issueTitle = process.env.ISSUE_TITLE;
+          const issueBody = process.env.ISSUE_BODY || '';
+          const geminiKey = process.env.GEMINI_API_KEY;
+          const githubToken = process.env.GITHUB_TOKEN;
+          const repo = process.env.REPO;
+          const branchName = `ai/issue-${issueNumber}`;
+
+          // Git config
+          execSync('git config user.name "github-actions[bot]"');
+          execSync('git config user.email "github-actions[bot]@users.noreply.github.com"');
+
+          // Get repo file structure
+          const fileTree = execSync('find . -type f -not -path "./.git/*" -not -path "./node_modules/*" -not -path "./.github/*"').toString().trim();
+
+          // Ask Gemini what to do
+          const prompt = `You are an AI developer assistant working on a blog website built with Astro.js.
+
+          Here is the repository file structure:
+          ${fileTree}
+
+          Issue #${issueNumber}: ${issueTitle}
+          
+          Issue description:
+          ${issueBody}
+
+          Based on this issue, provide a JSON response with exactly this structure:
+          {
+            "summary": "Brief summary of what needs to be done",
+            "files": [
+              {
+                "path": "relative/path/to/file.ext",
+                "action": "create" or "modify" or "delete",
+                "content": "full file content as string (for create/modify)",
+                "description": "what changed and why"
+              }
+            ],
+            "pr_title": "PR title",
+            "pr_body": "Detailed PR description in markdown"
+          }
+
+          Important rules:
+          - Only return valid JSON, no markdown, no extra text
+          - For modify actions, provide the complete new file content
+          - Keep changes minimal and focused on the issue
+          - pr_body should explain what was changed and why`;
+
+          const requestData = JSON.stringify({
+            contents: [{ parts: [{ text: prompt }] }],
+            generationConfig: { temperature: 0.2, maxOutputTokens: 8192 }
+          });
+
+          // Call Gemini API
+          const geminiResponse = await new Promise((resolve, reject) => {
+            const options = {
+              hostname: 'generativelanguage.googleapis.com',
+              path: `/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiKey}`,
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' }
+            };
+
+            const req = https.request(options, (res) => {
+              let data = '';
+              res.on('data', chunk => data += chunk);
+              res.on('end', () => resolve(JSON.parse(data)));
+            });
+            req.on('error', reject);
+            req.write(requestData);
+            req.end();
+          });
+
+          const rawText = geminiResponse.candidates[0].content.parts[0].text;
+          const jsonMatch = rawText.match(/\{[\s\S]*\}/);
+          if (!jsonMatch) throw new Error('No JSON found in Gemini response');
+          
+          const plan = JSON.parse(jsonMatch[0]);
+          console.log('Plan:', plan.summary);
+
+          // Create branch
+          execSync(`git checkout -b ${branchName}`);
+
+          // Apply file changes
+          import { writeFileSync, mkdirSync } from 'fs';
+          import { dirname } from 'path';
+
+          for (const file of plan.files) {
+            if (file.action === 'delete') {
+              execSync(`git rm -f "${file.path}"`);
+            } else {
+              mkdirSync(dirname(file.path), { recursive: true });
+              writeFileSync(file.path, file.content, 'utf8');
+              execSync(`git add "${file.path}"`);
+            }
+            console.log(`${file.action}: ${file.path} - ${file.description}`);
+          }
+
+          // Commit
+          execSync(`git commit -m "fix: resolve issue #${issueNumber} - ${issueTitle}"`);
+
+          // Push branch
+          execSync(`git push origin ${branchName}`);
+
+          // Create PR via GitHub API
+          const prData = JSON.stringify({
+            title: plan.pr_title,
+            body: `${plan.pr_body}\n\n---\n🤖 This PR was automatically generated by AI for issue #${issueNumber}`,
+            head: branchName,
+            base: 'main'
+          });
+
+          await new Promise((resolve, reject) => {
+            const options = {
+              hostname: 'api.github.com',
+              path: `/repos/${repo}/pulls`,
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${githubToken}`,
+                'User-Agent': 'github-actions'
+              }
+            };
+
+            const req = https.request(options, (res) => {
+              let data = '';
+              res.on('data', chunk => data += chunk);
+              res.on('end', () => {
+                const pr = JSON.parse(data);
+                console.log('PR created:', pr.html_url);
+                resolve(pr);
+              });
+            });
+            req.on('error', reject);
+            req.write(prData);
+            req.end();
+          });
+
+          console.log('Done!');
+          EOF
+          node process_issue.mjs
