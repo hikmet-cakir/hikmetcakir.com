@@ -51,13 +51,13 @@ jobs:
           // Read relevant file contents
           const relevantFiles = fileTree.split('\n')
             .filter(f => f.match(/\.(astro|js|ts|css|json)$/) && !f.includes('package-lock'))
-            .slice(0, 20);
+            .slice(0, 10);
 
           let fileContents = '';
           for (const filePath of relevantFiles) {
             try {
               const content = readFileSync(filePath, 'utf8');
-              fileContents += `\n\n=== ${filePath} ===\n${content.slice(0, 2000)}`;
+              fileContents += `\n\n=== ${filePath} ===\n${content.slice(0, 800)}`;
             } catch (e) {}
           }
 
