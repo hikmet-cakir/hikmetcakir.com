@@ -31,7 +31,7 @@ jobs:
           cat << 'EOF' > process_issue.mjs
           import { execSync } from 'child_process';
           import https from 'https';
-          import { writeFileSync, mkdirSync, readFileSync, existsSync } from 'fs';
+          import { writeFileSync, mkdirSync, readFileSync } from 'fs';
           import { dirname } from 'path';
 
           const issueNumber = process.env.ISSUE_NUMBER;
@@ -39,6 +39,7 @@ jobs:
           const issueBody = process.env.ISSUE_BODY || '';
           const githubToken = process.env.GITHUB_TOKEN;
           const repo = process.env.REPO;
+          const repoOwner = repo.split('/')[0];
           const branchName = `ai/issue-${issueNumber}`;
 
           // Git config
@@ -137,7 +138,6 @@ jobs:
           const rawText = apiResponse.choices[0].message.content;
           console.log('Raw response:', rawText.slice(0, 500));
 
-          // Clean response - remove markdown fences if present
           const cleaned = rawText.replace(/^```json\s*/i, '').replace(/^```\s*/i, '').replace(/\s*```$/i, '').trim();
 
           let plan;
@@ -186,32 +186,52 @@ jobs:
             base: 'main'
           });
 
-          const prResponse = await new Promise((resolve, reject) => {
-            const options = {
+          const makeRequest = (options, data) => new Promise((resolve, reject) => {
+            const req = https.request(options, (res) => {
+              let body = '';
+              res.on('data', chunk => body += chunk);
+              res.on('end', () => resolve(JSON.parse(body)));
+            });
+            req.on('error', reject);
+            if (data) req.write(data);
+            req.end();
+          });
+
+          const prResponse = await makeRequest({
+            hostname: 'api.github.com',
+            path: `/repos/${repo}/pulls`,
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${githubToken}`,
+              'User-Agent': 'github-actions'
+            }
+          }, prData);
+
+          if (prResponse.html_url) {
+            console.log('PR created:', prResponse.html_url);
+          } else {
+            console.log('PR response:', JSON.stringify(prResponse));
+          }
+
+          // Assign PR to repo owner
+          if (prResponse.number) {
+            const assignData = JSON.stringify({
+              assignees: [repoOwner]
+            });
+
+            await makeRequest({
               hostname: 'api.github.com',
-              path: `/repos/${repo}/pulls`,
+              path: `/repos/${repo}/issues/${prResponse.number}/assignees`,
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${githubToken}`,
                 'User-Agent': 'github-actions'
               }
-            };
+            }, assignData);
 
-            const req = https.request(options, (res) => {
-              let data = '';
-              res.on('data', chunk => data += chunk);
-              res.on('end', () => resolve(JSON.parse(data)));
-            });
-            req.on('error', reject);
-            req.write(prData);
-            req.end();
-          });
-
-          if (prResponse.html_url) {
-            console.log('PR created:', prResponse.html_url);
-          } else {
-            console.log('PR response:', JSON.stringify(prResponse));
+            console.log('PR assigned to:', repoOwner);
           }
           EOF
           node process_issue.mjs
