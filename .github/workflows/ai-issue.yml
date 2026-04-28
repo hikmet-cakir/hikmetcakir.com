@@ -47,15 +47,34 @@ jobs:
 
           const fileTree = execSync('find . -type f -not -path "./.git/*" -not -path "./node_modules/*" -not -path "./.github/*" -not -path "./dist/*"').toString().trim();
 
-          const relevantFiles = fileTree.split('\n')
-            .filter(f => f.match(/\.(astro|js|ts|css|json)$/) && !f.includes('package-lock'))
-            .slice(0, 10);
+          // Tüm astro ve js dosyalarını tam oku, küçük olanları önceliklendir
+          const allFiles = fileTree.split('\n')
+            .filter(f => f.match(/\.(astro|js|ts|css)$/) && !f.includes('package-lock') && !f.includes('node_modules'));
+
+          // Issue içeriğinde geçen dosya adlarını bul ve önce sırala
+          const issueLower = (issueTitle + ' ' + issueBody).toLowerCase();
+          const sortedFiles = allFiles.sort((a, b) => {
+            const aName = a.split('/').pop().toLowerCase();
+            const bName = b.split('/').pop().toLowerCase();
+            const aMatch = issueLower.includes(aName.replace(/\.[^.]+$/, ''));
+            const bMatch = issueLower.includes(bName.replace(/\.[^.]+$/, ''));
+            if (aMatch && !bMatch) return -1;
+            if (!aMatch && bMatch) return 1;
+            return 0;
+          });
 
           let fileContents = '';
-          for (const filePath of relevantFiles) {
+          let totalChars = 0;
+          const MAX_CHARS = 20000;
+
+          for (const filePath of sortedFiles) {
+            if (totalChars >= MAX_CHARS) break;
             try {
               const content = readFileSync(filePath, 'utf8');
-              fileContents += `\n\n=== ${filePath} ===\n${content.slice(0, 3000)}`;
+              const remaining = MAX_CHARS - totalChars;
+              const chunk = content.slice(0, remaining);
+              fileContents += `\n\n=== ${filePath} ===\n${chunk}`;
+              totalChars += chunk.length;
             } catch (e) {}
           }
 
@@ -64,13 +83,16 @@ jobs:
           Repository file structure:
           ${fileTree}
 
-          Key file contents:
+          File contents:
           ${fileContents}
 
           Issue #${issueNumber}: ${issueTitle}
           Issue description: ${issueBody}
 
-          Based on this issue, respond with ONLY a valid JSON object (no markdown, no code blocks, no extra text):
+          Carefully read the issue and find the correct file(s) to modify based on the file contents above.
+          Do NOT guess — use the actual file contents to make the right changes.
+
+          Respond with ONLY a valid JSON object:
           {
             "summary": "Brief summary of what needs to be done",
             "files": [
@@ -87,14 +109,15 @@ jobs:
 
           Rules:
           - Return ONLY the JSON object, no markdown fences, no backticks
-          - For modify/create: provide complete file content
-          - Keep changes minimal and focused`;
+          - For modify/create: provide the COMPLETE file content, not just the changed part
+          - Only change what the issue asks for, nothing else
+          - Make sure the path matches exactly with the file structure above`;
 
           const requestData = JSON.stringify({
-            model: 'gpt-4o',
+            model: 'gpt-4o-mini',
             messages: [{ role: 'user', content: prompt }],
-            temperature: 0.2,
-            max_tokens: 8192,
+            temperature: 0.1,
+            max_tokens: 16000,
             response_format: { type: 'json_object' }
           });
 
