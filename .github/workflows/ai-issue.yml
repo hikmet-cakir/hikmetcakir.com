@@ -55,7 +55,7 @@ jobs:
           for (const filePath of relevantFiles) {
             try {
               const content = readFileSync(filePath, 'utf8');
-              fileContents += `\n\n=== ${filePath} ===\n${content.slice(0, 800)}`;
+              fileContents += `\n\n=== ${filePath} ===\n${content.slice(0, 3000)}`;
             } catch (e) {}
           }
 
