@@ -21,6 +21,7 @@ public class ArticleEntity {
     private String title;
     private String content;
     private String categoryId;
+    private String thumbnail;
     private String createdBy;
     private LocalDateTime created;
     private String updatedBy;
