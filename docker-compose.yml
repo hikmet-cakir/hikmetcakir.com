@@ -46,7 +46,9 @@ services:
       redis:
         condition: service_healthy
     environment:
-      - SPRING_PROFILES_ACTIVE=prod
+      - SPRING_PROFILES_ACTIVE=prod    
+      - AWS_ACCESS_KEY=${AWS_ACCESS_KEY}
+      - AWS_SECRET_KEY=${AWS_SECRET_KEY}
     
   mongodb:
     image: mongo:7
