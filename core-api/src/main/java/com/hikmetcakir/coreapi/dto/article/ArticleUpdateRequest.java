@@ -18,6 +18,7 @@ public class ArticleUpdateRequest {
     private String content;
     @NotBlank
     private String categoryId;
+    private String thumbnail;
     @NotBlank
     private String updatedBy;
 }
