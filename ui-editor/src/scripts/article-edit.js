@@ -139,7 +139,7 @@ document.addEventListener("DOMContentLoaded", () => {
           body.thumbnail = thumbnailUrl;
         }
 
-        const res = await fetch(`https://hikmetcakir.com/article/${articleId}`, {
+        const res = await fetch(`https://hikmetcakir.com/api/article/${articleId}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           credentials: "include",
