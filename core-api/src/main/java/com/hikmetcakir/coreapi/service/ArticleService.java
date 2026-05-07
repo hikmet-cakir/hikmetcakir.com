@@ -80,6 +80,7 @@ public class ArticleService {
                 .title(request.getTitle())
                 .content(request.getContent())
                 .categoryId(request.getCategoryId())
+                .thumbnail(request.getThumbnail())
                 .createdBy(request.getCreatedBy())
                 .created(LocalDateTime.now())
                 .deleted(false)

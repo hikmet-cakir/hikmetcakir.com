@@ -1,142 +1,190 @@
-  const API_BASE = document.body.dataset.apiBase;
+const API_BASE = document.body.dataset.apiBase;
 
-  document.addEventListener("DOMContentLoaded", () => {
-          const prismScript = document.createElement("script");
-          prismScript.src = "https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js";
-          const prismJsScript = document.createElement("script");
-          prismJsScript.src = "https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js";
-          
-          prismScript.onload = () => {
-            document.body.appendChild(prismJsScript);
-          };
+document.addEventListener("DOMContentLoaded", () => {
+  const prismScript = document.createElement("script");
+  prismScript.src = "https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js";
+  const prismJsScript = document.createElement("script");
+  prismJsScript.src = "https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js";
 
-          const script = document.createElement("script");
-          script.src = "https://cdn.quilljs.com/1.3.6/quill.js";
-          script.onload = async () => {
-            document.body.appendChild(prismScript);
-            
-            const imgUploaderScript = document.createElement("script");
-            imgUploaderScript.src = "https://unpkg.com/quill-image-uploader@1.3.0/dist/quill.imageUploader.min.js";
-            imgUploaderScript.onload = () => {
-              Quill.register("modules/imageUploader", ImageUploader);
- 
-              var quill = new Quill("#editor-container", {
-                theme: "snow",
-                modules: {
-                  toolbar: [
-                    ["bold", "italic", "underline", "strike"],
-                    ["blockquote", "code-block"],
-                    [{ header: 1 }, { header: 2 }],
-                    [{ list: "ordered" }, { list: "bullet" }],
-                    [{ script: "sub" }, { script: "super" }],
-                    [{ indent: "-1" }, { indent: "+1" }],
-                    [{ direction: "rtl" }],
-                    [{ size: ["small", false, "large", "huge"] }],
-                    [{ header: [1, 2, 3, 4, 5, 6, false] }],
-                    [{ color: [] }, { background: [] }],
-                    [{ font: [] }],
-                    [{ align: [] }],
-                    ["clean"],
-                    ["link", "image", "video"]
-                  ],
-                  imageUploader: {
-                    upload: file => {
-                      return new Promise((resolve, reject) => {
-                        const reader = new FileReader();
-                        reader.onload = () => resolve(reader.result); // base64
-                        reader.onerror = reject;
-                        reader.readAsDataURL(file);
-                      });
-                    }
-                  }
-                }
+  prismScript.onload = () => {
+    document.body.appendChild(prismJsScript);
+  };
+
+  const script = document.createElement("script");
+  script.src = "https://cdn.quilljs.com/1.3.6/quill.js";
+  script.onload = async () => {
+    document.body.appendChild(prismScript);
+
+    const imgUploaderScript = document.createElement("script");
+    imgUploaderScript.src = "https://unpkg.com/quill-image-uploader@1.3.0/dist/quill.imageUploader.min.js";
+    imgUploaderScript.onload = () => {
+      Quill.register("modules/imageUploader", ImageUploader);
+
+      var quill = new Quill("#editor-container", {
+        theme: "snow",
+        modules: {
+          toolbar: [
+            ["bold", "italic", "underline", "strike"],
+            ["blockquote", "code-block"],
+            [{ header: 1 }, { header: 2 }],
+            [{ list: "ordered" }, { list: "bullet" }],
+            [{ script: "sub" }, { script: "super" }],
+            [{ indent: "-1" }, { indent: "+1" }],
+            [{ direction: "rtl" }],
+            [{ size: ["small", false, "large", "huge"] }],
+            [{ header: [1, 2, 3, 4, 5, 6, false] }],
+            [{ color: [] }, { background: [] }],
+            [{ font: [] }],
+            [{ align: [] }],
+            ["clean"],
+            ["link", "image", "video"]
+          ],
+          imageUploader: {
+            upload: file => {
+              return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
               });
+            }
+          }
+        }
+      });
 
-              function highlightCodeBlocks() {
-                if (!window.Prism) return;
-                
-                const codeBlocks = quill.root.querySelectorAll('pre.ql-syntax');
-                codeBlocks.forEach(block => {
-                  if (!block.classList.contains('prism-highlighted')) {
-                    block.classList.add('prism-highlighted');
-                    const code = block.textContent || '';
-                    const lang = 'javascript';
-                    const codeElement = document.createElement('code');
-                    codeElement.className = `language-${lang}`;
-                    codeElement.textContent = code;
-                    block.innerHTML = '';
-                    block.appendChild(codeElement);
-                    Prism.highlightElement(codeElement);
-                  }
-                });
-              }
-
-              let highlightTimeout;
-              quill.on('text-change', () => {
-                clearTimeout(highlightTimeout);
-                highlightTimeout = setTimeout(() => {
-                  highlightCodeBlocks();
-                }, 300);
-              });
-
-              const checkPrism = setInterval(() => {
-                if (window.Prism) {
-                  clearInterval(checkPrism);
-                  setTimeout(highlightCodeBlocks, 100);
-                }
-              }, 100); 
-             
-              const btn = document.getElementById("btnSave");
-              const titleInput = document.getElementById("articleTitle");
-              const categorySelect = document.getElementById("articleCategory");
-
-              (async () => {
-                try {
-                  const categoryRes = await fetch(`https://hikmetcakir.com/api/category`);
-                  const categories = await categoryRes.json();
-                  categorySelect.innerHTML = '<option value="">Select category...</option>';
-                  categories.forEach(cat => {
-                    const option = document.createElement("option");
-                    option.value = cat.id;
-                    option.textContent = cat.name;
-                    categorySelect.appendChild(option);
-                  });
-                } catch (err) {
-                  categorySelect.innerHTML = '<option value="">Error loading categories</option>';
-                  console.error("Error loading categories:", err);
-                }
-              })();
-
-              btn.addEventListener("click", async () => {
-                const title = titleInput.value.trim();
-                const content = quill.root.innerHTML.trim();
-                const categoryId = categorySelect.value;
-                const createdBy = '49001';
-
-                if (!title || !content || !categoryId) {
-                  alert("Title, category and content cannot be empty!");
-                  return;
-                }
-
-                try {
-                  const res = await fetch(`https://hikmetcakir.com/api/article`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    credentials: "include",
-                    body: JSON.stringify({ title, content, categoryId, createdBy })
-                  });
-
-                  if (!res.ok) throw new Error(await res.text());
-                  alert("Article added successfully!");
-                  titleInput.value = "";
-                  quill.setText("");
-                  categorySelect.selectedIndex = 0;
-                } catch (err) {
-                  alert("Error: " + err.message);
-                }
-              });
-            };
-            document.body.appendChild(imgUploaderScript);
-          };
-          document.body.appendChild(script);
+      function highlightCodeBlocks() {
+        if (!window.Prism) return;
+        const codeBlocks = quill.root.querySelectorAll('pre.ql-syntax');
+        codeBlocks.forEach(block => {
+          if (!block.classList.contains('prism-highlighted')) {
+            block.classList.add('prism-highlighted');
+            const code = block.textContent || '';
+            const lang = 'javascript';
+            const codeElement = document.createElement('code');
+            codeElement.className = `language-${lang}`;
+            codeElement.textContent = code;
+            block.innerHTML = '';
+            block.appendChild(codeElement);
+            Prism.highlightElement(codeElement);
+          }
         });
+      }
+
+      let highlightTimeout;
+      quill.on('text-change', () => {
+        clearTimeout(highlightTimeout);
+        highlightTimeout = setTimeout(() => {
+          highlightCodeBlocks();
+        }, 300);
+      });
+
+      const checkPrism = setInterval(() => {
+        if (window.Prism) {
+          clearInterval(checkPrism);
+          setTimeout(highlightCodeBlocks, 100);
+        }
+      }, 100);
+
+      const btn = document.getElementById("btnSave");
+      const titleInput = document.getElementById("articleTitle");
+      const categorySelect = document.getElementById("articleCategory");
+      const thumbnailInput = document.getElementById("articleThumbnail");
+      const thumbnailPreview = document.getElementById("thumbnailPreview");
+      const thumbnailImg = document.getElementById("thumbnailImg");
+      const thumbnailStatus = document.getElementById("thumbnailStatus");
+
+      // Thumbnail önizleme
+      thumbnailInput.addEventListener("change", () => {
+        const file = thumbnailInput.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            thumbnailImg.src = e.target.result;
+            thumbnailPreview.style.display = "block";
+            thumbnailStatus.textContent = `Selected: ${file.name}`;
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+
+      // Kategorileri yükle
+      (async () => {
+        try {
+          const categoryRes = await fetch(`https://hikmetcakir.com/api/category`);
+          const categories = await categoryRes.json();
+          categorySelect.innerHTML = '<option value="">Select category...</option>';
+          categories.forEach(cat => {
+            const option = document.createElement("option");
+            option.value = cat.id;
+            option.textContent = cat.name;
+            categorySelect.appendChild(option);
+          });
+        } catch (err) {
+          categorySelect.innerHTML = '<option value="">Error loading categories</option>';
+          console.error("Error loading categories:", err);
+        }
+      })();
+
+      btn.addEventListener("click", async () => {
+        const title = titleInput.value.trim();
+        const content = quill.root.innerHTML.trim();
+        const categoryId = categorySelect.value;
+        const createdBy = '49001';
+
+        if (!title || !content || !categoryId) {
+          alert("Title, category and content cannot be empty!");
+          return;
+        }
+
+        let thumbnailUrl = null;
+
+        // Görsel varsa önce S3'e yükle
+        const file = thumbnailInput.files[0];
+        if (file) {
+          try {
+            thumbnailStatus.textContent = "Uploading image...";
+            const formData = new FormData();
+            formData.append("file", file);
+
+            const uploadRes = await fetch(`https://hikmetcakir.com/api/upload/thumbnail`, {
+              method: "POST",
+              credentials: "include",
+              body: formData
+            });
+
+            if (!uploadRes.ok) throw new Error("Image upload failed");
+            const uploadData = await uploadRes.json();
+            thumbnailUrl = uploadData.url;
+            thumbnailStatus.textContent = "Image uploaded successfully!";
+          } catch (err) {
+            alert("Image upload failed: " + err.message);
+            return;
+          }
+        }
+
+        // Article kaydet
+        try {
+          const res = await fetch(`https://hikmetcakir.com/api/article`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+            body: JSON.stringify({ title, content, categoryId, createdBy, thumbnail: thumbnailUrl })
+          });
+
+          if (!res.ok) throw new Error(await res.text());
+          alert("Article added successfully!");
+          titleInput.value = "";
+          quill.setText("");
+          categorySelect.selectedIndex = 0;
+          thumbnailInput.value = "";
+          thumbnailPreview.style.display = "none";
+          thumbnailStatus.textContent = "";
+        } catch (err) {
+          alert("Error: " + err.message);
+        }
+      });
+    };
+    document.body.appendChild(imgUploaderScript);
+  };
+  document.body.appendChild(script);
+});

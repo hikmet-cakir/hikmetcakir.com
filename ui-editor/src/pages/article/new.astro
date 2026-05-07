@@ -18,19 +18,28 @@ import '../../styles/quill-code-block.css';
         </div>
 
         <div class="article-title-box">
-            <label for="articleCategory">Category</label>
-            <select id="articleCategory">
+          <label for="articleCategory">Category</label>
+          <select id="articleCategory">
             <option value="">Loading categories...</option>
-            </select>
+          </select>
+        </div>
+
+        <div class="article-title-box">
+          <label for="articleThumbnail">Thumbnail</label>
+          <input type="file" id="articleThumbnail" accept="image/*" />
+          <div id="thumbnailPreview" style="margin-top: 10px; display: none;">
+            <img id="thumbnailImg" src="" alt="Preview" style="max-width: 300px; max-height: 200px; border-radius: 8px; object-fit: cover;" />
+            <p id="thumbnailStatus" style="font-size: 12px; color: #6b7280; margin-top: 4px;"></p>
+          </div>
         </div>
 
         <div id="editor-container" style="height:400px;"></div>
 
         <div class="action-buttons"> 
-            <button id="btnSave" class="btn btn-primary">
-                <i class="fas fa-plus"></i>
-                Save
-            </button>
+          <button id="btnSave" class="btn btn-primary">
+            <i class="fas fa-plus"></i>
+            Save
+          </button>
         </div> 
       </div>
 

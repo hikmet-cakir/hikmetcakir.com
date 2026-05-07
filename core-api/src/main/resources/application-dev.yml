@@ -6,3 +6,7 @@ spring:
     import: "configserver:"
   application:
     name: coreapi-application-dev
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB

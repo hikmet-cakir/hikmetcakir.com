@@ -68,8 +68,19 @@ const color = categoryColors[article.categoryName] || { bg: 'rgba(243,244,246,0.
     flex: 1;
   }
 
+  .featured .card-img-wrap {
+    height: 420px;
+    flex: none;
+  }
+
+  .small .card-img-wrap {
+    height: 220px;
+    flex: none;
+  }
+
   .card-img {
     width: 100%;
+    height: 100%;
     object-fit: cover;
     display: block;
     transition: transform 0.2s ease;
@@ -77,14 +88,6 @@ const color = categoryColors[article.categoryName] || { bg: 'rgba(243,244,246,0.
 
   .article-card:hover .card-img {
     transform: scale(1.03);
-  }
-
-  .featured .card-img {
-    height: 420px;
-  }
-
-  .small .card-img {
-    height: 220px;
   }
 
   /* ── Badge ── */
