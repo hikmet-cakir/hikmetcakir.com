@@ -68,9 +68,14 @@ const color = categoryColors[article.categoryName] || { bg: 'rgba(243,244,246,0.
     flex: 1;
   }
 
+  .article-card.featured {
+    height: 100%;
+  }
+
   .featured .card-img-wrap {
-    height: 420px;
-    flex: none;
+    height: 100%;
+    min-height: 420px;
+    flex: 1;
   }
 
   .small .card-img-wrap {
